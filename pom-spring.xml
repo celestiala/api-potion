@@ -1,0 +1,88 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<artifactId>module_tmon_mobile_api_util_spring</artifactId>
+	
+	<version>0.1.0-SNAPSHOT</version>
+	<packaging>jar</packaging>
+	
+	<build>
+	<finalName>module_tmon_mobile_api_util_spring</finalName>
+	<sourceDirectory>src/main/java</sourceDirectory>
+	<resources>
+      <resource>
+      	<directory>src</directory>
+        <excludes>
+          <exclude>**/*</exclude>
+        </excludes>
+      </resource>
+    </resources>
+		<plugins>
+		<plugin>
+              <groupId>org.apache.maven.plugins</groupId>
+              <artifactId>maven-compiler-plugin</artifactId>
+              <executions>
+              <execution>
+                      <id>default-compile</id>
+                      <phase>none</phase>
+                  </execution>
+                  <execution>
+                  <phase>compile</phase>
+		            <goals>
+		                <goal>compile</goal>
+		            </goals>
+		            
+		            <configuration>
+		                 <includes>
+				            <include>main/java/com/tmoncorp/mobile/util/common/**/*</include>
+				            <include>main/java/com/tmoncorp/mobile/util/spring/**/*</include>
+            			</includes>
+            			
+             		</configuration>
+                  </execution>
+              </executions>
+          </plugin>
+		
+		<plugin><!-- don't pack the war  -->
+              <groupId>org.apache.maven.plugins</groupId>
+              <artifactId>maven-war-plugin</artifactId>
+              <executions>
+                  <execution>
+                      <id>default-war</id>
+                      <phase>none</phase>
+                  </execution>
+                  <execution>
+                      <id>war-exploded</id>
+                      <phase>package</phase>
+                      <goals>
+                          <goal>exploded</goal>
+                      </goals>
+                  </execution>
+              </executions>
+          </plugin> 
+          
+	</plugins>
+	</build>
+	<dependencies>
+		<!-- Tmon -->
+		<dependency>
+			<groupId>com.tmoncorp</groupId>
+			<artifactId>tmon-core-api</artifactId>
+			<version>1.0.0-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>com.tmoncorp</groupId>
+			<artifactId>tmon-module-url-manager</artifactId>
+			<version>1.0.0-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>net.spy</groupId>
+			<artifactId>spymemcached</artifactId>
+			<version>2.11.5</version>
+		</dependency>
+	</dependencies>
+	<parent>
+		<groupId>com.tmoncorp</groupId>
+		<artifactId>tmon-parent-web</artifactId>
+		<version>1.0.0-SNAPSHOT</version>
+	</parent>
+</project>
