@@ -1,6 +1,5 @@
 package com.tmoncorp.mobile.util.spring.clientinfo;
 
-import com.tmoncorp.api.common.category.model.CategorySet;
 import com.tmoncorp.mobile.util.common.clientinfo.ClientPlatform;
 
 public class LagacyPlatformTransrator {
@@ -51,14 +50,6 @@ public class LagacyPlatformTransrator {
 		if (platform == ClientPlatform.NORMAL)
 			return "pc";
 		return "mobile";
-	}
-	
-	public static CategorySet.SetId toCategorySet(){
-		ClientPlatform platform = ClientInfoService.getInfo().getPlatform();
-		if (platform == ClientPlatform.NORMAL)
-			return CategorySet.SetId.DEAL_PC;
-		return CategorySet.SetId.DEAL_MOBILE;
-		
 	}
 
 }
