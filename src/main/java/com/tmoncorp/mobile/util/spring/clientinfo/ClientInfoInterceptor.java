@@ -15,7 +15,7 @@ public class ClientInfoInterceptor extends HandlerInterceptorAdapter {
 	private void setClientInfo(HttpServletRequest request){
 		ClientInfo info=new ClientInfo();
 	    String platform=request.getHeader(CLIENT_PLATFORM);
-	    if (platform !=null && !platform.equals(""))
+	    if (platform !=null && !"".equals(platform))
 	    	info.setPlatform(ClientPlatform.valueOf(platform));
 	    else
 	    	info.setPlatform(ClientPlatform.MOBILE);

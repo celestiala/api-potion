@@ -24,10 +24,10 @@ public class AsyncService {
 	
 	private static final Logger LOG = LoggerFactory.getLogger(AsyncService.class);
 	
-	private final static int THREAD_POOL_MIN_CORE_SIZE=2;
-	private final static int THREAD_POOL_MAX_SIZE=12;
-	private final static int TASK_TIMEOUT=240*1000; //ms
-	private final static int TASK_DELAY=50;
+	private static final int THREAD_POOL_MIN_CORE_SIZE=2;
+	private static final int THREAD_POOL_MAX_SIZE=12;
+	private static final int TASK_TIMEOUT=240*1000; //ms
+	private static final int TASK_DELAY=50;
 	private ThreadPoolTaskExecutor pool;
 	
 	@PostConstruct
@@ -93,11 +93,9 @@ public class AsyncService {
 	                	list.add(deal);
                 } catch (InterruptedException e) {
                 	LOG.debug("Async Task interrupted {} ",e);
-                	e.printStackTrace();
 	                break;
                 } catch (ExecutionException e) {
                 	LOG.debug("Async Task excution exception {} ",e);
-                	e.printStackTrace();
 	                break;
                 }
                 futureList.remove(m);
