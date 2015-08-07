@@ -4,6 +4,8 @@ import java.lang.reflect.Method;
 
 import com.tmoncorp.mobile.util.common.cache.Cache;
 import org.aopalliance.aop.Advice;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.aop.Pointcut;
 import org.springframework.aop.support.AbstractPointcutAdvisor;
 import org.springframework.aop.support.StaticMethodMatcherPointcut;

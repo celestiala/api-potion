@@ -34,6 +34,7 @@ public class MCacheInterceptor implements MethodInterceptor {
 	private final static int THREAD_POOL_CORE_SIZE=6;
 	private final static int THREAD_POOL_MAX_SIZE=12;
 	private final static int INNER_QUEUE_SIZE=5000;
+	private CacheMode cacheMode = CacheMode.ON;
 	private ThreadPoolTaskExecutor pool;
 
 	@Autowired
@@ -58,6 +59,14 @@ public class MCacheInterceptor implements MethodInterceptor {
 			pool.shutdown();
 			pool=null;
 		}
+	}
+
+	public void setMode(CacheMode mode){
+		cacheMode=mode;
+	}
+
+	public CacheMode getMode(){
+		return cacheMode;
 	}
 	
 	private String makeKeyName(MethodInvocation invo,boolean isPlatformDependent){
@@ -173,6 +182,9 @@ public class MCacheInterceptor implements MethodInterceptor {
 
 	@Override
     public Object invoke(final MethodInvocation mi) throws Throwable {
+
+		if (cacheMode==CacheMode.OFF)
+			return mi.proceed();
 		
 		Method method=mi.getMethod();
 		Cache cacheInfo=method.getAnnotation(Cache.class);
