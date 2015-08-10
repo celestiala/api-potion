@@ -86,17 +86,20 @@ public class AsyncService {
 			
 			Future<T> m=futureList.firstElement();
 			if (m.isDone()){
-				T deal;
+				T item;
                 try {
-	                deal = m.get();
-	                if (deal != null)
-	                	list.add(deal);
+	                item = m.get();
+	                if (item != null)
+	                	list.add(item);
                 } catch (InterruptedException e) {
                 	LOG.debug("Async Task interrupted {} ",e);
 	                break;
                 } catch (ExecutionException e) {
                 	LOG.debug("Async Task excution exception {} ",e);
-	                break;
+	                continue;
+                } catch (RuntimeException e){
+	                LOG.debug("Async Task runtime exception {} ",e);
+	                continue;
                 }
                 futureList.remove(m);
                 
@@ -106,7 +109,7 @@ public class AsyncService {
 				try {
 					tasktime+=TASK_DELAY;
 		            Thread.sleep(TASK_DELAY);
-	            } catch (InterruptedException e) {
+				} catch (InterruptedException e) {
 	            	LOG.debug("Async Task loop interrupted {} ",e);
 		            break;
 	            }
