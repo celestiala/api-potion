@@ -2,6 +2,7 @@ package com.tmoncorp.mobile.util.jersey.cache;
 
 import com.tmoncorp.mobile.util.common.cache.Cache;
 import com.tmoncorp.mobile.util.common.cache.CacheItem;
+import com.tmoncorp.mobile.util.common.cache.CacheMode;
 import net.spy.memcached.AddrUtil;
 import net.spy.memcached.MemcachedClient;
 import org.slf4j.Logger;
@@ -26,6 +27,7 @@ public class CacheRepository {
 	private MemcachedClient client;
 	private static final String MOBILE_GATEWAY_CACHE_KEY = "mg";
 	private static final int EXPIRE_TIME_UNIT = 1; //second
+	private CacheMode mode=CacheMode.ON;
 
 	@Context
 	private HttpServletRequest request;
@@ -84,5 +86,13 @@ public class CacheRepository {
 
 	public HttpServletRequest getHttpServletRequest() {
 		return request;
+	}
+
+	public CacheMode getMode(){
+		return mode;
+	}
+
+	public void setMode(CacheMode mode){
+		this.mode=mode;
 	}
 }

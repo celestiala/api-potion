@@ -1,6 +1,7 @@
 package com.tmoncorp.mobile.util.jersey.cache;
 
 import com.tmoncorp.mobile.util.common.cache.Cache;
+import com.tmoncorp.mobile.util.common.cache.CacheMode;
 import com.tmoncorp.mobile.util.common.cache.CacheType;
 import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;
@@ -113,6 +114,10 @@ public class CacheInterceptor implements MethodInterceptor {
 
 	@Override
 	public Object invoke(MethodInvocation mi) throws Throwable {
+		CacheRepository cacheRepo = ciService.getCacheRepo();
+		if (cacheRepo == null || cacheRepo.getMode() ==CacheMode.OFF)
+			return mi.proceed();
+
 		Method method = mi.getMethod();
 		Cache cacheInfo = method.getAnnotation(Cache.class);
 		if (cacheInfo.type() == CacheType.MEMORY) {
