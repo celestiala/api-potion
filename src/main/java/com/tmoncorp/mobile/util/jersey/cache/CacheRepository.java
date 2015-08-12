@@ -27,6 +27,7 @@ public class CacheRepository {
 	private MemcachedClient client;
 	private static final String MOBILE_GATEWAY_CACHE_KEY = "mg";
 	private static final int EXPIRE_TIME_UNIT = 1; //second
+	private final boolean isModeSeletable;
 	private CacheMode mode=CacheMode.ON;
 
 	@Context
@@ -35,6 +36,11 @@ public class CacheRepository {
 	public CacheRepository(Properties properties) {
 		memcacheUrl = properties.getProperty(MEMCACHE_SERVER_PROPERTY);
 		environment = properties.getProperty(ENVIRONMENT_PROPERTY);
+		if (environment.trim().startsWith("r"))
+			isModeSeletable=false;
+		else
+			isModeSeletable=true;
+
 		try {
 			client = new MemcachedClient(AddrUtil.getAddresses(memcacheUrl));
 		} catch (IOException e) {
@@ -93,6 +99,7 @@ public class CacheRepository {
 	}
 
 	public void setMode(CacheMode mode){
-		this.mode=mode;
+		if (isModeSeletable)
+			this.mode=mode;
 	}
 }
