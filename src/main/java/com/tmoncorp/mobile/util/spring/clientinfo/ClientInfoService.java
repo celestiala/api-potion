@@ -1,35 +1,23 @@
 package com.tmoncorp.mobile.util.spring.clientinfo;
 
 import com.tmoncorp.mobile.util.common.clientinfo.ClientInfo;
-import com.tmoncorp.mobile.util.common.clientinfo.ClientPlatform;
+import com.tmoncorp.mobile.util.common.clientinfo.ClientInfoProvider;
 
 public class ClientInfoService {
 
-	private static final ClientInfo defaultInfo;
-
-	static {
-		defaultInfo=new ClientInfo();
-		defaultInfo.setPlatform(ClientPlatform.MOBILE);
-	}
-	
-	private static final ThreadLocal<ClientInfo> threadLocal = new ThreadLocal<>();
-	
+	@Deprecated
 	public static ClientInfo getInfo(){
-		ClientInfo info=threadLocal.get();
-		if (info == null)
-			info=defaultInfo;
-		return info;
+		return ClientInfoProvider.getInfo();
 	}
-	
+
+	@Deprecated
 	public static void setInfo(ClientInfo info){
-		threadLocal.set(info);
+		ClientInfoProvider.setInfo(info);
 	}
-	
+
+	@Deprecated
 	public static void clean(){
-		threadLocal.remove();
+		ClientInfoProvider.clean();
 	}
-	
-	
-	
 
 }

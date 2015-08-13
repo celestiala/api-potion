@@ -5,12 +5,13 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.tmoncorp.mobile.util.common.clientinfo.ClientInfo;
 import com.tmoncorp.mobile.util.common.clientinfo.ClientPlatform;
+import com.tmoncorp.mobile.util.common.clientinfo.HeaderNames;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
 public class ClientInfoInterceptor extends HandlerInterceptorAdapter {
 
-	public static final String CLIENT_PLATFORM="Api-Client-Platform";
+	public static final String CLIENT_PLATFORM= HeaderNames.CLIENT_PLATFORM;
 	
 	private void setClientInfo(HttpServletRequest request){
 		ClientInfo info=new ClientInfo();
@@ -19,9 +20,9 @@ public class ClientInfoInterceptor extends HandlerInterceptorAdapter {
 	    	info.setPlatform(ClientPlatform.valueOf(platform));
 	    else
 	    	info.setPlatform(ClientPlatform.MOBILE);
-	    info.setVersion(request.getHeader("Api-Version"));
+	    info.setVersion(request.getHeader(HeaderNames.API_VERSION));
 	    //TODO check header name
-	    info.setUserAgent(request.getHeader("User-Agent"));
+	    info.setUserAgent(request.getHeader(HeaderNames.USER_AGENT));
 	    ClientInfoService.setInfo(info);
 	}
 
