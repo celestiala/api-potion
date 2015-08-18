@@ -1,6 +1,5 @@
 package com.tmoncorp.mobile.util.jersey.http;
 
-import com.tmoncorp.mobile.util.common.clientinfo.ClientInfo;
 import com.tmoncorp.mobile.util.common.clientinfo.ClientPlatform;
 import com.tmoncorp.mobile.util.common.clientinfo.HeaderNames;
 import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
