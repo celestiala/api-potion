@@ -33,7 +33,7 @@ public class MCacheInterceptor implements MethodInterceptor {
 	
 	private final static int THREAD_POOL_CORE_SIZE=6;
 	private final static int THREAD_POOL_MAX_SIZE=12;
-	private final static int INNER_QUEUE_SIZE=5000;
+	//private final static int INNER_QUEUE_SIZE=5000;
 	private CacheMode cacheMode = CacheMode.ON;
 	private ThreadPoolTaskExecutor pool;
 
@@ -46,10 +46,18 @@ public class MCacheInterceptor implements MethodInterceptor {
 	@PostConstruct
 	public void init() throws Exception {
 		pool=new ThreadPoolTaskExecutor();
-		pool.setCorePoolSize(THREAD_POOL_CORE_SIZE);
-		pool.setMaxPoolSize(THREAD_POOL_MAX_SIZE);
+
+		int maxPoolSize=Runtime.getRuntime().availableProcessors();
+		int corePoolSize=THREAD_POOL_CORE_SIZE;
+		if (maxPoolSize < 1){
+			maxPoolSize=THREAD_POOL_MAX_SIZE;
+		}
+		corePoolSize=maxPoolSize/2;
+
+		pool.setCorePoolSize(corePoolSize);
+		pool.setMaxPoolSize(maxPoolSize);
 		pool.setWaitForTasksToCompleteOnShutdown(true);
-		pool.setQueueCapacity(INNER_QUEUE_SIZE);
+		//pool.setQueueCapacity(INNER_QUEUE_SIZE);
 		pool.initialize();
 	}
 	
