@@ -43,7 +43,7 @@ public class MemoryCache implements CacheProvider {
 		if (value == null)
 			return;
 		CacheItem cache = new CacheItem();
-		cache.setExpireTime(LocalDateTime.now().plusSeconds(10));//cacheInfo.expiration()));
+		cache.setExpireTime(LocalDateTime.now().plusSeconds(cacheInfo.expiration()));//cacheInfo.expiration()));
 		cache.setValue(value);
 		objectCache.put(keyName, cache);
 	}
