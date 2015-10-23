@@ -148,8 +148,9 @@ public class MCacheInterceptor implements MethodInterceptor {
 						cacheProvider.set(keyName, mi.proceed(),cacheInfo);
 				} catch (Throwable e) {
 					LOG.debug("Cache set exception {}",e);
+				} finally {
+					ClientInfoService.clean();
 				}
-				ClientInfoService.clean();
 			}
 
 		};

@@ -64,9 +64,15 @@ public class AsyncExecutor {
 				@Override
 				public T call() throws Exception {
 					ClientInfoService.setInfo(info);
-					T result=call.async(data);
-					ClientInfoService.clean();
+					T result;
+					try{
+						result=call.async(data);
+					}finally {
+						ClientInfoService.clean();
+					}
 					return result;
+
+
 				}});
 			futureList.add(f);
 
