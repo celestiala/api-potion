@@ -68,7 +68,7 @@ public class CacheInterceptor implements MethodInterceptor {
 			}
 			return hexString.toString();
 		} catch (Exception e) {
-			LOG.error("", e);
+			LOG.error("{}", e);
 			return null;
 		}
 	}

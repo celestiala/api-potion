@@ -47,4 +47,5 @@ public class MemoryCache implements CacheProvider {
 		cache.setValue(value);
 		objectCache.put(keyName, cache);
 	}
+
 }

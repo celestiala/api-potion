@@ -44,7 +44,7 @@ public class CacheRepository {
 		try {
 			client = new MemcachedClient(AddrUtil.getAddresses(memcacheUrl));
 		} catch (IOException e) {
-			LOG.error("", e);
+			LOG.error("{}", e);
 		}
 	}
 

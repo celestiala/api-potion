@@ -2,7 +2,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<artifactId>module_tmon_mobile_api_util_spring</artifactId>
 	
-	<version>0.1.4-SNAPSHOT</version>
+	<version>0.1.5-SNAPSHOT</version>
 	<packaging>jar</packaging>
 	
 	<build>

@@ -7,6 +7,8 @@ import com.tmoncorp.mobile.util.common.cache.Cache;
 import com.tmoncorp.mobile.util.common.cache.CacheItem;
 import com.tmoncorp.mobile.util.common.cache.CacheProvider;
 import com.tmoncorp.mobile.util.common.cache.CacheType;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.core.io.support.PropertiesLoaderUtils;
 import org.springframework.stereotype.Component;
 
@@ -16,8 +18,8 @@ import net.spy.memcached.MemcachedClient;
 
 @Component
 public class MemcacheClient implements CacheProvider {
-		
-	
+
+	private static Logger LOGGER = LoggerFactory.getLogger(CacheProvider.class);
 	private static final String MEMCACHE_SERVER_PROPERTY="memcache.server";
 	private static final String ENVIRONMENT_PROPERTY="deploy.phase";
 	private static final String APPLICATION_PROPERTIES="applicationProperty.properties";
@@ -36,15 +38,15 @@ public class MemcacheClient implements CacheProvider {
 			memcacheUrls=props.getProperty(MEMCACHE_SERVER_PROPERTY);
 		    client=new MemcachedClient(new BinaryConnectionFactory(),AddrUtil.getAddresses(memcacheUrls));
         } catch (Exception e) {
-	        e.printStackTrace();
+			LOGGER.error("memcache client initialize failed : {}",e.getMessage());
         }
 	}
 	
 	private void setCache(String key,Object value,int expire){
 		try{
 		client.set(key,expire,value);
-		}catch (Exception e){
-			e.printStackTrace();
+		}catch (Exception e) {
+			LOGGER.error("set cache failed : {}",key);
 		}
 	}
 	
