@@ -35,6 +35,7 @@ public class MCacheInterceptor implements MethodInterceptor {
 	private final static int THREAD_POOL_MAX_SIZE=12;
 	//private final static int INNER_QUEUE_SIZE=5000;
 	private CacheMode cacheMode = CacheMode.ON;
+	private String cachePrefix="";
 	private ThreadPoolTaskExecutor pool;
 
 	@Autowired
@@ -76,13 +77,35 @@ public class MCacheInterceptor implements MethodInterceptor {
 	public CacheMode getMode(){
 		return cacheMode;
 	}
+
+	public void setPrefix(String prefix){
+
+		if (prefix == null) {
+			cachePrefix = "";
+			return;
+		}
+
+		int length=prefix.length();
+		if (length > 5){
+			cachePrefix=prefix.substring(0,5)+":";
+		}else if (length == 0){
+			cachePrefix="";
+		}
+		else{
+			cachePrefix=prefix+":";
+		}
+	}
+
+	public String getPrefix(){
+		return cachePrefix;
+	}
 	
 	private String makeKeyName(MethodInvocation invo,boolean isPlatformDependent){
 		
 		Method method=invo.getMethod();
 		
 		StringBuilder cb=new StringBuilder();
-		cb.append(method.getDeclaringClass().getSimpleName());
+		cb.append(cachePrefix+method.getDeclaringClass().getSimpleName());
 		cb.append(KEY_SEPERATOR);
 		cb.append(method.getName());
 		
