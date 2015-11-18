@@ -246,7 +246,7 @@ public class MCacheInterceptor implements MethodInterceptor {
 				memoryCache.set(keyName, EmptyCache.getInstance(), cacheInfo);
 				pool.execute(makeAsyncCacheItem(mi, keyName, cacheInfo,memoryCache));
 				return null;
-			}else if (response == EmptyCache.getInstance())
+			}else if (response instanceof EmptyCache)
 				return null;
 			return refreshAsyncCache(response, mi, keyName, cacheInfo, memoryCache);
 		}
