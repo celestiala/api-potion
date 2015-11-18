@@ -248,7 +248,11 @@ public class MCacheInterceptor implements MethodInterceptor {
 				return null;
 			}else if (response instanceof EmptyCache)
 				return null;
-			return refreshAsyncCache(response, mi, keyName, cacheInfo, memoryCache);
+			response=refreshAsyncCache(response, mi, keyName, cacheInfo, memoryCache);
+			if (response instanceof EmptyCache)
+				return null;
+			else
+				return response;
 		}
 
 		response=client.get(keyName);
