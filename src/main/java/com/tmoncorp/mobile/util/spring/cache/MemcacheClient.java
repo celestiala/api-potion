@@ -22,12 +22,14 @@ public class MemcacheClient implements CacheProvider {
 	private static Logger LOGGER = LoggerFactory.getLogger(CacheProvider.class);
 	private static final String MEMCACHE_SERVER_PROPERTY="memcache.server";
 	private static final String ENVIRONMENT_PROPERTY="deploy.phase";
+	private static final String CACHE_PREFIX_PROPERTY="cache.prefix";
+	private static final String CACHE_PREFIX_DEFAULT="cache";
 	private static final String APPLICATION_PROPERTIES="applicationProperty.properties";
 	private static final String SPERATOR=":";
 	private String buildEnv;
 	private String memcacheUrls;
 	private MemcachedClient client;
-    private static final String MART_API_CACHE_KEY="deal";
+    private String cachePrefix;
     private static final int EXPIRE_TIME_UNIT= 1; //second
     
     public MemcacheClient(){
@@ -36,6 +38,7 @@ public class MemcacheClient implements CacheProvider {
 		  	Properties props = PropertiesLoaderUtils.loadAllProperties(APPLICATION_PROPERTIES);
 		  	buildEnv=props.getProperty(ENVIRONMENT_PROPERTY).substring(0, 2);
 			memcacheUrls=props.getProperty(MEMCACHE_SERVER_PROPERTY);
+			cachePrefix =props.getProperty(CACHE_PREFIX_PROPERTY,CACHE_PREFIX_DEFAULT);
 		    client=new MemcachedClient(new BinaryConnectionFactory(),AddrUtil.getAddresses(memcacheUrls));
         } catch (Exception e) {
 			LOGGER.error("memcache client initialize failed : {}",e.getMessage());
@@ -75,7 +78,7 @@ public class MemcacheClient implements CacheProvider {
 	}
 	
 	private String makeRawKey(String key){
-		return MART_API_CACHE_KEY + SPERATOR+buildEnv+SPERATOR+key;
+		return cachePrefix + SPERATOR+buildEnv+SPERATOR+key;
 	}
 	
 		

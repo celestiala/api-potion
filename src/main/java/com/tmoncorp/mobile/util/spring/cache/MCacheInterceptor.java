@@ -48,12 +48,11 @@ public class MCacheInterceptor implements MethodInterceptor {
 	public void init() throws Exception {
 		pool=new ThreadPoolTaskExecutor();
 
-		int maxPoolSize=Runtime.getRuntime().availableProcessors();
-		int corePoolSize=THREAD_POOL_CORE_SIZE;
-		if (maxPoolSize < 1){
-			maxPoolSize=THREAD_POOL_MAX_SIZE;
+		int corePoolSize=Runtime.getRuntime().availableProcessors();
+		if (corePoolSize < 1){
+			corePoolSize=THREAD_POOL_CORE_SIZE;
 		}
-		corePoolSize=maxPoolSize/2;
+		int maxPoolSize=corePoolSize*2;
 
 		pool.setCorePoolSize(corePoolSize);
 		pool.setMaxPoolSize(maxPoolSize);
@@ -100,17 +99,23 @@ public class MCacheInterceptor implements MethodInterceptor {
 		return cachePrefix;
 	}
 	
-	private String makeKeyName(MethodInvocation invo,boolean isPlatformDependent){
+	private String makeKeyName(MethodInvocation invo,Cache cacheInfo){
 		
 		Method method=invo.getMethod();
 		
 		StringBuilder cb=new StringBuilder();
-		cb.append(cachePrefix+method.getDeclaringClass().getSimpleName());
-		cb.append(KEY_SEPERATOR);
-		cb.append(method.getName());
+
+		String name=cacheInfo.name();
+		if (name == null || name.isEmpty()) {
+			cb.append(cachePrefix + method.getDeclaringClass().getSimpleName());
+			cb.append(KEY_SEPERATOR);
+			cb.append(method.getName());
+		}else{
+			cb.append(cachePrefix + name);
+		}
 		
 		StringBuilder cp=new StringBuilder();
-		if (isPlatformDependent){
+		if (cacheInfo.isPlatformDependent()){
 			cp.append(KEY_SEPERATOR);
 			cp.append(ClientInfoService.getInfo().getPlatform());
 		}
@@ -221,7 +226,7 @@ public class MCacheInterceptor implements MethodInterceptor {
 		Method method=mi.getMethod();
 		Cache cacheInfo=method.getAnnotation(Cache.class);
 		
-		String keyName=makeKeyName(mi, cacheInfo.isPlatformDependent());
+		String keyName=makeKeyName(mi, cacheInfo);
 		LOG.debug("cache key {}", keyName);
 		if (keyName.isEmpty())
 			return mi.proceed();
