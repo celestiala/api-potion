@@ -17,5 +17,5 @@ public @interface Cache {
 	int expiration() default DEFAULT_EXPIRETIME;
 	CacheType type() default CacheType.SYNC;
 	boolean isPlatformDependent() default true;
-	String name();
+	String name() default "";
 }

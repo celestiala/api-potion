@@ -106,7 +106,7 @@ public class MCacheInterceptor implements MethodInterceptor {
 		StringBuilder cb=new StringBuilder();
 
 		String name=cacheInfo.name();
-		if (name == null || name.isEmpty()) {
+		if (name.isEmpty()) {
 			cb.append(cachePrefix + method.getDeclaringClass().getSimpleName());
 			cb.append(KEY_SEPERATOR);
 			cb.append(method.getName());
