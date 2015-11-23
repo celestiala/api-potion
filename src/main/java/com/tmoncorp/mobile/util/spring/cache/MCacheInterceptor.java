@@ -227,7 +227,6 @@ public class MCacheInterceptor implements MethodInterceptor {
 		Cache cacheInfo=method.getAnnotation(Cache.class);
 		
 		String keyName=makeKeyName(mi, cacheInfo);
-		LOG.debug("cache key {}", keyName);
 		if (keyName.isEmpty())
 			return mi.proceed();
 		Object response;

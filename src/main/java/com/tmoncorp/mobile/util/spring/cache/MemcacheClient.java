@@ -64,6 +64,8 @@ public class MemcacheClient implements CacheProvider {
 			realExpireTime=realExpireTime*3;
 		else if (cacheInfo.type() == CacheType.ASYNC_ONLY)
 			realExpireTime=60*60*24;
+		String rawKey=makeRawKey(key);
+		LOGGER.debug("{}",rawKey);
 		setCache(makeRawKey(key), item,realExpireTime);
 	}
 	
