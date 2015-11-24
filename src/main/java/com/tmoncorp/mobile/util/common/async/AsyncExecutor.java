@@ -19,14 +19,14 @@ public class AsyncExecutor {
 	
 	private static final Logger LOG = LoggerFactory.getLogger(AsyncExecutor.class);
 	
-	private static final int THREAD_POOL_MIN_CORE_SIZE=2;
-	private static final int THREAD_POOL_MAX_SIZE=12;
+	private static final int THREAD_POOL_MIN_CORE_SIZE=4;
+	private static final int THREAD_POOL_MAX_SIZE=24;
 	private static final int TASK_TIMEOUT=240*1000; //ms
 	private static final int TASK_DELAY=50;
 	private ThreadPoolTaskExecutor pool;
 	
 	public void init() throws Exception {
-		int maxPoolSize=Runtime.getRuntime().availableProcessors();
+		int maxPoolSize=Runtime.getRuntime().availableProcessors()*2;
 		int corePoolSize=0;
 		if (maxPoolSize < 1){
 			maxPoolSize=THREAD_POOL_MAX_SIZE;
