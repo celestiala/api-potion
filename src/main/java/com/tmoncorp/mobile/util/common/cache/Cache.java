@@ -16,6 +16,8 @@ public @interface Cache {
 	public static final int DEFAULT_EXPIRETIME = 5*60; //seconds
 	int expiration() default DEFAULT_EXPIRETIME;
 	CacheType type() default CacheType.SYNC;
+	SyncType syncType() default SyncType.SYNC;
 	boolean isPlatformDependent() default true;
+	boolean setOnError() default true;
 	String name() default "";
 }

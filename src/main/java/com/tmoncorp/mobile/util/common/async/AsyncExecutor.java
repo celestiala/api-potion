@@ -48,6 +48,10 @@ public class AsyncExecutor {
 			pool=null;
 		}
 	}
+
+	public void submitAsync(Runnable run){
+		pool.execute(run);
+	}
 	
 	public <T> Future<T> submitAsync(Callable<T> call){
 		return pool.submit(call);

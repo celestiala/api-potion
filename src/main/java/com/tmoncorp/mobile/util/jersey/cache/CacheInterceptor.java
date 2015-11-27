@@ -92,7 +92,7 @@ public class CacheInterceptor implements MethodInterceptor {
 
 	private Object getMemoryCache(Cache cacheInfo, MethodInvocation mi) throws Throwable {
 		String keyName = makeKeyName(mi);
-		Object cache = memoryCache.get(keyName);
+		Object cache = memoryCache.get(keyName,cacheInfo,mi);
 		if (cache != null) {
 			return cache;
 		}
@@ -103,7 +103,7 @@ public class CacheInterceptor implements MethodInterceptor {
 
 	private Object getCompositeCache(Cache cacheInfo, MethodInvocation mi) throws Throwable {
 		String keyName = makeKeyName(mi);
-		Object cache = memoryCache.get(keyName);
+		Object cache = memoryCache.get(keyName,cacheInfo,mi);
 		if (cache != null) {
 			return cache;
 		}
@@ -128,4 +128,5 @@ public class CacheInterceptor implements MethodInterceptor {
 
 		return getMemcache(cacheInfo, mi);
 	}
+
 }

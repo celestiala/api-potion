@@ -4,12 +4,7 @@ import com.tmoncorp.mobile.util.common.async.AsyncExecutor;
 import com.tmoncorp.mobile.util.common.async.AsyncTask;
 import org.glassfish.jersey.server.spi.Container;
 import org.glassfish.jersey.server.spi.ContainerLifecycleListener;
-import org.springframework.stereotype.Service;
-
-import javax.annotation.PostConstruct;
-import javax.annotation.PreDestroy;
 import javax.inject.Singleton;
-import javax.ws.rs.ext.Provider;
 import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.Future;
@@ -30,6 +25,10 @@ public class AsyncRunner implements ContainerLifecycleListener {
 	public <T> Future<T> submitAsync(Callable<T> call){
 
 		return excutor.submitAsync(call);
+	}
+
+	public void submitAsync(Runnable run){
+		excutor.submitAsync(run);
 	}
 
 
