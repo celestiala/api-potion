@@ -22,13 +22,10 @@ public class SecurityUtils {
 
 	}
 
-	public static StringBuffer getHash(CharSequence str,String algorithm){
-		CharBuffer buffer=CharBuffer.wrap(str);
-		Charset charset = StandardCharsets.UTF_16;
-		CharsetEncoder encoder = charset.newEncoder();
+	public static StringBuffer getHash(String str,String algorithm){
 		try {
 			MessageDigest md=MessageDigest.getInstance(algorithm);
-			byte[] byteData = md.digest(encoder.encode(buffer).array());
+			byte[] byteData = md.digest(str.getBytes());
 			return byteToString(byteData);
 		} catch (Exception e) {
 			return null;
