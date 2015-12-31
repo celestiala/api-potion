@@ -1,35 +1,82 @@
 package com.tmoncorp.mobile.util.common.security;
 
-import java.nio.CharBuffer;
-import java.nio.charset.Charset;
-import java.nio.charset.CharsetEncoder;
-import java.nio.charset.StandardCharsets;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import javax.crypto.Cipher;
+import javax.crypto.spec.SecretKeySpec;
 import java.security.MessageDigest;
+import java.util.Base64;
 
 public class SecurityUtils {
 
-	public static String MD5="MD5";
-	public static String SHA1="SHA-1";
+	public final static String MD5="MD5";
+	public final static String SHA1="SHA-1";
 
-	public static StringBuffer byteToString(byte[] bytes){
-		StringBuffer hexString = new StringBuffer();
+	private final static String CHIPER_ALGORITHM="AES";
+	private final static String CHIPER_NAME="AES/ECB/PKCS5Padding";
+	private final static String CHAR_ENCODING="UTF-8";
+
+	private static final Logger LOG = LoggerFactory.getLogger(SecurityUtils.class);
+
+	public static StringBuilder byteToHex(byte[] bytes){
+		StringBuilder hexString = new StringBuilder();
 		for (int i=0;i<bytes.length;i++) {
 			String hex=Integer.toHexString(0xff & bytes[i]);
 			if(hex.length()==1) hexString.append('0');
 			hexString.append(hex);
 		}
 		return hexString;
-
 	}
 
-	public static StringBuffer getHash(String str,String algorithm){
+	public static StringBuilder getHash(String str,String algorithm){
+
+		return getHash(str.getBytes(),algorithm);
+	}
+
+	public static StringBuilder getHash(byte[] str,String algorithm){
+		return byteToHex(getHashByte(str, algorithm));
+	}
+
+	public static byte[] getHashByte(byte[] str,String algorithm){
 		try {
 			MessageDigest md=MessageDigest.getInstance(algorithm);
-			byte[] byteData = md.digest(str.getBytes());
-			return byteToString(byteData);
+			byte[] byteData = md.digest(str);
+			return byteData;
 		} catch (Exception e) {
+			LOG.warn("could not make hash string");
 			return null;
 		}
+	}
+
+	private static byte[] getAesCipher(byte[] input, byte[] key,int mode){
+
+		try {
+			SecretKeySpec keySpec = new SecretKeySpec(key, CHIPER_ALGORITHM);
+			Cipher cipher = Cipher.getInstance(CHIPER_NAME);
+			cipher.init(mode, keySpec);
+			return cipher.doFinal(input);
+		}catch(Exception e){
+			LOG.warn("AES Cipher Exception occurred");
+			return null;
+		}
+	}
+
+	public static String encryptAES(String input,byte[] key){
+		return Base64.getEncoder().encodeToString(encryptAES(input.getBytes(),key));
+	}
+
+	public static String decryptAES(String input,byte[] key){
+		byte[] inputRaw=Base64.getDecoder().decode(input);
+		return new String(decryptAES(inputRaw, key));
+	}
+
+	public static byte[] encryptAES(byte[] input, byte[] key){
+		return getAesCipher(input, key, Cipher.ENCRYPT_MODE);
+	}
+
+	public static byte[] decryptAES(byte[] input, byte[] key){
+		return getAesCipher(input, key, Cipher.DECRYPT_MODE);
 	}
 
 	public static String getMD5String(String str){
