@@ -11,6 +11,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
+import javax.servlet.http.HttpServletRequest;
+import javax.ws.rs.core.Context;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.util.Collections;
@@ -25,6 +27,9 @@ public class CacheInterceptorService implements InterceptionService {
 
 	@Inject
 	private CacheRepository cacheRepo;
+
+	@Context
+	private HttpServletRequest request;
 
 	public CacheInterceptorService() {
 
@@ -64,6 +69,10 @@ public class CacheInterceptorService implements InterceptionService {
 
 	public CacheRepository getCacheRepo() {
 		return cacheRepo;
+	}
+
+	public HttpServletRequest getHttpServletRequest() {
+		return request;
 	}
 
 }

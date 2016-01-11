@@ -1,8 +1,6 @@
 package com.tmoncorp.mobile.util.jersey.cache;
 
-import com.tmoncorp.mobile.util.common.cache.Cache;
-import com.tmoncorp.mobile.util.common.cache.CacheItem;
-import com.tmoncorp.mobile.util.common.cache.CacheMode;
+import com.tmoncorp.mobile.util.common.cache.*;
 import net.spy.memcached.AddrUtil;
 import net.spy.memcached.MemcachedClient;
 import org.slf4j.Logger;
@@ -16,7 +14,7 @@ import java.time.LocalDateTime;
 import java.util.Properties;
 
 @Singleton
-public class CacheRepository {
+public class CacheRepository implements CacheProvider ,EtagGenerator{
 	private static final Logger LOG = LoggerFactory.getLogger(CacheRepository.class);
 
 	private static final String MEMCACHE_SERVER_PROPERTY = "memcache.servers";
@@ -30,8 +28,8 @@ public class CacheRepository {
 	private final boolean isModeSeletable;
 	private CacheMode mode=CacheMode.ON;
 
-	@Context
-	private HttpServletRequest request;
+	private EtagRegister etagRegister;
+
 
 	public CacheRepository(Properties properties) {
 		memcacheUrl = properties.getProperty(MEMCACHE_SERVER_PROPERTY);
@@ -70,6 +68,10 @@ public class CacheRepository {
 		client.replace(key, EXPIRE_TIME_UNIT, "");
 	}
 
+	@Override public void set(String keyName, Object value, Cache cacheInfo) {
+		set(keyName,value,cacheInfo.expiration());
+	}
+
 	//TODO FIXME support composite expiration
 	public Object get(String key) {
 		Object value = client.get(makeRawKey(key));
@@ -90,9 +92,7 @@ public class CacheRepository {
 		return MOBILE_GATEWAY_CACHE_KEY + SPERATOR + environment + SPERATOR + key;
 	}
 
-	public HttpServletRequest getHttpServletRequest() {
-		return request;
-	}
+
 
 	public CacheMode getMode(){
 		return mode;
@@ -101,5 +101,13 @@ public class CacheRepository {
 	public void setMode(CacheMode mode){
 		if (isModeSeletable)
 			this.mode=mode;
+	}
+
+	@Override public void setEtagRegister(EtagRegister register) {
+		etagRegister=register;
+	}
+
+	@Override public EtagRegister getEtagRegister() {
+		return etagRegister;
 	}
 }

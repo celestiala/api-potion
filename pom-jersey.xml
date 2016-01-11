@@ -2,7 +2,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<artifactId>module_tmon_mobile_api_util_jersey</artifactId>
 
-	<version>0.1.3-SNAPSHOT</version>
+	<version>0.1.4-SNAPSHOT</version>
 	<packaging>jar</packaging>
 
 	<build>

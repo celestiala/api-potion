@@ -12,6 +12,7 @@ import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 
 import com.tmoncorp.mobile.util.common.cache.*;
+import com.tmoncorp.mobile.util.common.security.SecurityUtils;
 import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;
 import org.slf4j.Logger;
@@ -126,32 +127,12 @@ public class MCacheInterceptor implements MethodInterceptor {
 		if (cp.length() < LONG_KEY)
 			cb.append(cp);
 		else{
-	        cb.append(getHashKey(cp));
+	        cb.append(SecurityUtils.getHash(cp.toString(),SecurityUtils.MD5));
 		}
 		return cb.toString();
 	}
 	
-	private String getHashKey(CharSequence keyName){
-		CharBuffer buffer=CharBuffer.wrap(keyName);
-		Charset charset = StandardCharsets.UTF_16;
-		CharsetEncoder encoder = charset.newEncoder();
-		
-		try {
-            MessageDigest md=MessageDigest.getInstance("MD5");
-            byte[] byteData = md.digest(encoder.encode(buffer).array());
-            
-            StringBuffer hexString = new StringBuffer();
-        	for (int i=0;i<byteData.length;i++) {
-        		String hex=Integer.toHexString(0xff & byteData[i]);
-       	     	if(hex.length()==1) hexString.append('0');
-       	     	hexString.append(hex);
-        	}
-        	return hexString.toString();
-        } catch (Exception e) {
-            return null;
-        }
-	}
-	
+
 	private boolean hasExpireCache(String keyName, CacheProvider cacheProvider){
 		Object response=cacheProvider.get(keyName);
 		if (response != null && response instanceof CacheItem){

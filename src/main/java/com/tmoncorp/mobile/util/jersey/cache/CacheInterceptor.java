@@ -1,21 +1,16 @@
 package com.tmoncorp.mobile.util.jersey.cache;
 
-import com.tmoncorp.mobile.util.common.cache.Cache;
-import com.tmoncorp.mobile.util.common.cache.CacheMode;
-import com.tmoncorp.mobile.util.common.cache.CacheType;
+import com.tmoncorp.mobile.util.common.cache.*;
+import com.tmoncorp.mobile.util.common.security.SecurityUtils;
 import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.lang.reflect.Method;
-import java.nio.CharBuffer;
-import java.nio.charset.Charset;
-import java.nio.charset.CharsetEncoder;
-import java.nio.charset.StandardCharsets;
-import java.security.MessageDigest;
 
-public class CacheInterceptor implements MethodInterceptor {
+
+public class CacheInterceptor implements MethodInterceptor ,EtagRegister {
 	private static final Logger LOG = LoggerFactory.getLogger(CacheInterceptor.class);
 
 	private static final String KEY_SEPERATOR = ":";
@@ -27,6 +22,8 @@ public class CacheInterceptor implements MethodInterceptor {
 	public CacheInterceptor(CacheInterceptorService service) {
 		ciService = service;
 		memoryCache = new MemoryCache();
+		service.getCacheRepo().setEtagRegister(this);
+		memoryCache.setEtagRegister(this);
 	}
 
 	private String makeKeyName(MethodInvocation invo) {
@@ -45,32 +42,9 @@ public class CacheInterceptor implements MethodInterceptor {
 		if (cp.length() < LONG_KEY)
 			cb.append(cp);
 		else {
-			cb.append(getHashKey(cp));
+			cb.append(SecurityUtils.getHash(cp.toString(),SecurityUtils.MD5));
 		}
 		return cb.toString();
-	}
-
-	private String getHashKey(CharSequence keyName) {
-		CharBuffer buffer = CharBuffer.wrap(keyName);
-		Charset charset = StandardCharsets.UTF_16;
-		CharsetEncoder encoder = charset.newEncoder();
-
-		try {
-			MessageDigest md = MessageDigest.getInstance("MD5");
-			byte[] byteData = md.digest(encoder.encode(buffer).array());
-
-			StringBuffer hexString = new StringBuffer();
-			for (int i = 0; i < byteData.length; i++) {
-				String hex = Integer.toHexString(0xff & byteData[i]);
-				if (hex.length() == 1)
-					hexString.append('0');
-				hexString.append(hex);
-			}
-			return hexString.toString();
-		} catch (Exception e) {
-			LOG.error("{}", e);
-			return null;
-		}
 	}
 
 	private Object getMemcache(Cache cacheInfo, MethodInvocation mi) throws Throwable {
@@ -81,12 +55,15 @@ public class CacheInterceptor implements MethodInterceptor {
 		String keyName = makeKeyName(mi);
 		Object response;
 		response = cacheRepo.get(keyName);
-		if (response != null)
+		if (response != null) {
+			setEtagCache(keyName);
 			return response;
+		}
 
 		int expire = cacheInfo.expiration();
 		response = mi.proceed();
 		cacheRepo.set(keyName, response, expire);
+		generateEtag(keyName,cacheInfo,mi);
 		return response;
 	}
 
@@ -94,10 +71,12 @@ public class CacheInterceptor implements MethodInterceptor {
 		String keyName = makeKeyName(mi);
 		Object cache = memoryCache.get(keyName,cacheInfo,mi);
 		if (cache != null) {
+			setEtagCache(keyName);
 			return cache;
 		}
 		cache = mi.proceed();
-		memoryCache.set(keyName, cache, cacheInfo.expiration());
+		memoryCache.set(keyName, cache, cacheInfo);
+		generateEtag(keyName,cacheInfo,mi);
 		return cache;
 	}
 
@@ -105,15 +84,38 @@ public class CacheInterceptor implements MethodInterceptor {
 		String keyName = makeKeyName(mi);
 		Object cache = memoryCache.get(keyName,cacheInfo,mi);
 		if (cache != null) {
+			setEtagCache(keyName);
 			return cache;
 		}
 		cache = getMemcache(cacheInfo, mi);
-		memoryCache.set(keyName, cache, cacheInfo.expiration());
+		memoryCache.set(keyName, cache, cacheInfo);
+		generateEtag(keyName,cacheInfo,mi);
 		return cache;
 	}
 
+	private void generateEtag(String keyName, Cache cacheInfo, MethodInvocation mi){
+		if (cacheInfo.browserCache() == BrowserCache.ETAG){
+			String etag= SecurityUtils.getSHA1String(keyName + cacheInfo.expiration());
+			ciService.getCacheRepo().set("e:"+keyName,etag,cacheInfo.expiration());
+			ciService.getCacheRepo().set(etag,"e:"+keyName,cacheInfo.expiration());
+			setEtag(etag);
+		}
+	}
+
+	private void setEtagCache(String keyName){
+		Object etag=ciService.getCacheRepo().get("e:"+keyName);
+		if (etag != null)
+			setEtag((String)etag);
+	}
+
+	public void setEtag(String etag){
+		ciService.getHttpServletRequest().setAttribute("etag",etag);
+	}
+
+
 	@Override
 	public Object invoke(MethodInvocation mi) throws Throwable {
+
 		CacheRepository cacheRepo = ciService.getCacheRepo();
 		if (cacheRepo == null || cacheRepo.getMode() ==CacheMode.OFF)
 			return mi.proceed();
@@ -125,7 +127,6 @@ public class CacheInterceptor implements MethodInterceptor {
 		} else if (cacheInfo.type() == CacheType.COMPOSITE) {
 			return getCompositeCache(cacheInfo, mi);
 		}
-
 		return getMemcache(cacheInfo, mi);
 	}
 

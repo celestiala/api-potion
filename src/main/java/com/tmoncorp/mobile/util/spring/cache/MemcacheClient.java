@@ -49,7 +49,7 @@ public class MemcacheClient implements CacheProvider {
 		try{
 		client.set(key,expire,value);
 		}catch (Exception e) {
-			LOGGER.error("set cache failed : {}",key);
+			LOGGER.error("set cache failed : {}",e.getMessage());
 		}
 	}
 	
@@ -78,11 +78,22 @@ public class MemcacheClient implements CacheProvider {
 		Object value =client.get(makeRawKey(key));
 		return value;
 	}
-	
+
+	public void deleteRaw(String key){
+		client.delete(key);
+	}
+
+	public void setRaw(String key,Object value,int expire){
+		setCache(key,value,expire);
+	}
+
+	public Object getRaw(String key){
+		return client.get(key);
+	}
+
+
 	private String makeRawKey(String key){
 		return cachePrefix + SPERATOR+buildEnv+SPERATOR+key;
 	}
-	
-		
-	
+
 }

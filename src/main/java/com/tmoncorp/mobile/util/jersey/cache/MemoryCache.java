@@ -1,10 +1,8 @@
 package com.tmoncorp.mobile.util.jersey.cache;
 
-import com.tmoncorp.mobile.util.common.cache.Cache;
-import com.tmoncorp.mobile.util.common.cache.CacheItem;
-import com.tmoncorp.mobile.util.common.cache.SyncType;
+import com.tmoncorp.mobile.util.common.cache.*;
+import com.tmoncorp.mobile.util.common.security.SecurityUtils;
 import com.tmoncorp.mobile.util.jersey.async.AsyncRunner;
-import com.tmoncorp.mobile.util.spring.clientinfo.ClientInfoService;
 import org.aopalliance.intercept.MethodInvocation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,11 +10,12 @@ import org.slf4j.LoggerFactory;
 import java.time.LocalDateTime;
 import java.util.concurrent.ConcurrentHashMap;
 
-public class MemoryCache {
+public class MemoryCache implements CacheProvider ,EtagGenerator{
 
 	private static final Logger LOG = LoggerFactory.getLogger(MemoryCache.class);
 
 	private final ConcurrentHashMap<String, CacheItem> objectCache;
+	private EtagRegister etagRegister;
 
 	public MemoryCache() {
 		objectCache = new ConcurrentHashMap<>();
@@ -78,13 +77,28 @@ public class MemoryCache {
 		return null;
 	}
 
-	public void set(String keyName, Object value, int expire) {
+	public void set(String keyName, Object value, Cache cacheinfo) {
 		if (value == null)
 			return;
 		CacheItem cache = new CacheItem();
-		cache.setExpireTime(LocalDateTime.now().plusSeconds(expire));
+		cache.setExpireTime(LocalDateTime.now().plusSeconds(cacheinfo.expiration()));
 		cache.setValue(value);
+		if (cacheinfo.browserCache() == BrowserCache.ETAG){
+			String etag= SecurityUtils.getSHA1String(keyName + cacheinfo.expiration());
+			getEtagRegister().setEtag(etag);
+		}
 		objectCache.put(keyName, cache);
 	}
 
+	@Override public Object get(String keyName) {
+		return objectCache.get(keyName);
+	}
+
+	@Override public void setEtagRegister(EtagRegister register) {
+		etagRegister=register;
+	}
+
+	@Override public EtagRegister getEtagRegister() {
+		return etagRegister;
+	}
 }
