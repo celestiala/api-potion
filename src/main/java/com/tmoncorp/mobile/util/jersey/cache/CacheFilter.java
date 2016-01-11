@@ -1,6 +1,7 @@
 package com.tmoncorp.mobile.util.jersey.cache;
 
-import com.tmoncorp.mobile.util.common.cache.BrowserCache;
+import com.tmoncorp.mobile.util.common.cache.HttpCacheConstant;
+import com.tmoncorp.mobile.util.common.cache.HttpCacheType;
 import com.tmoncorp.mobile.util.common.cache.Cache;
 
 import javax.inject.Inject;
@@ -22,7 +23,7 @@ public class CacheFilter implements ContainerRequestFilter, ContainerResponseFil
 
 	private boolean hasNotEtag(){
 		Cache cache=resourceInfo.getResourceMethod().getAnnotation(Cache.class);
-		return cache == null || cache.browserCache() != BrowserCache.ETAG;
+		return cache == null || cache.browserCache() != HttpCacheType.ETAG;
 	}
 	private boolean isNotModified(ContainerRequestContext requestContext){
 		String etag=requestContext.getHeaderString(HttpHeaders.IF_NONE_MATCH);
@@ -42,9 +43,11 @@ public class CacheFilter implements ContainerRequestFilter, ContainerResponseFil
 
 
 	@Override public void filter(ContainerRequestContext requestContext, ContainerResponseContext responseContext) throws IOException {
+		responseContext.getHeaders().add(HttpHeaders.EXPIRES,requestContext.getProperty(HttpCacheConstant.EXPIRE));
+
 		if (hasNotEtag())
 			return;
-		responseContext.getHeaders().add(HttpHeaders.ETAG,requestContext.getProperty("etag"));
+		responseContext.getHeaders().add(HttpHeaders.ETAG,requestContext.getProperty(HttpCacheConstant.ETAG));
 	}
 }
 

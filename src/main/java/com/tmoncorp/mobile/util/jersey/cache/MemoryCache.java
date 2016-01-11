@@ -10,12 +10,12 @@ import org.slf4j.LoggerFactory;
 import java.time.LocalDateTime;
 import java.util.concurrent.ConcurrentHashMap;
 
-public class MemoryCache implements CacheProvider ,EtagGenerator{
+public class MemoryCache implements CacheProvider ,HttpCacheInfoContainer {
 
 	private static final Logger LOG = LoggerFactory.getLogger(MemoryCache.class);
 
 	private final ConcurrentHashMap<String, CacheItem> objectCache;
-	private EtagRegister etagRegister;
+	private HttpCacheSupport httpCacheSupport;
 
 	public MemoryCache() {
 		objectCache = new ConcurrentHashMap<>();
@@ -71,6 +71,7 @@ public class MemoryCache implements CacheProvider ,EtagGenerator{
 				}
 			} else {
 				LOG.debug("memory cache not expired {}", cache.getExpireTime());
+				setExpire(cache);
 				return cache.getValue();
 			}
 		}
@@ -83,22 +84,27 @@ public class MemoryCache implements CacheProvider ,EtagGenerator{
 		CacheItem cache = new CacheItem();
 		cache.setExpireTime(LocalDateTime.now().plusSeconds(cacheinfo.expiration()));
 		cache.setValue(value);
-		if (cacheinfo.browserCache() == BrowserCache.ETAG){
+		if (cacheinfo.browserCache() == HttpCacheType.ETAG){
 			String etag= SecurityUtils.getSHA1String(keyName + cacheinfo.expiration());
-			getEtagRegister().setEtag(etag);
+			getHttpCache().setEtag(etag);
 		}
+		setExpire(cache);
 		objectCache.put(keyName, cache);
+	}
+
+	private void setExpire(CacheItem item){
+		getHttpCache().setExpire(item.getExpireTime());
 	}
 
 	@Override public Object get(String keyName) {
 		return objectCache.get(keyName);
 	}
 
-	@Override public void setEtagRegister(EtagRegister register) {
-		etagRegister=register;
+	public void setHttpCache(HttpCacheSupport register) {
+		httpCacheSupport =register;
 	}
 
-	@Override public EtagRegister getEtagRegister() {
-		return etagRegister;
+	public HttpCacheSupport getHttpCache() {
+		return httpCacheSupport;
 	}
 }

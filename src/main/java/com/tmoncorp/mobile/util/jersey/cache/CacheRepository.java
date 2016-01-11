@@ -7,14 +7,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.inject.Singleton;
-import javax.servlet.http.HttpServletRequest;
-import javax.ws.rs.core.Context;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.Properties;
 
 @Singleton
-public class CacheRepository implements CacheProvider ,EtagGenerator{
+public class CacheRepository implements CacheProvider ,HttpCacheInfoContainer {
 	private static final Logger LOG = LoggerFactory.getLogger(CacheRepository.class);
 
 	private static final String MEMCACHE_SERVER_PROPERTY = "memcache.servers";
@@ -28,7 +26,7 @@ public class CacheRepository implements CacheProvider ,EtagGenerator{
 	private final boolean isModeSeletable;
 	private CacheMode mode=CacheMode.ON;
 
-	private EtagRegister etagRegister;
+	private HttpCacheSupport httpCacheSupport;
 
 
 	public CacheRepository(Properties properties) {
@@ -53,6 +51,7 @@ public class CacheRepository implements CacheProvider ,EtagGenerator{
 		CacheItem cache = new CacheItem();
 		cache.setExpireTime(LocalDateTime.now().plusSeconds(expire));
 		cache.setValue(value);
+		setExpire(cache);
 		client.set(key, expire, cache);
 	}
 
@@ -79,6 +78,7 @@ public class CacheRepository implements CacheProvider ,EtagGenerator{
 			CacheItem item = (CacheItem) value;
 			if (!LocalDateTime.now().isAfter(item.getExpireTime())) {
 				LOG.debug("memcache not expired {}", item.getExpireTime());
+				setExpire(item);
 				return item.getValue();
 			} else {
 				LOG.debug("memcache expired");
@@ -103,11 +103,15 @@ public class CacheRepository implements CacheProvider ,EtagGenerator{
 			this.mode=mode;
 	}
 
-	@Override public void setEtagRegister(EtagRegister register) {
-		etagRegister=register;
+	public void setHttpCache(HttpCacheSupport register) {
+		httpCacheSupport =register;
 	}
 
-	@Override public EtagRegister getEtagRegister() {
-		return etagRegister;
+	public HttpCacheSupport getHttpCache() {
+		return httpCacheSupport;
+	}
+
+	private void setExpire(CacheItem item){
+		getHttpCache().setExpire(item.getExpireTime());
 	}
 }

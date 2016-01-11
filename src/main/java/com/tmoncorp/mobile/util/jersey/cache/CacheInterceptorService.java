@@ -1,6 +1,9 @@
 package com.tmoncorp.mobile.util.jersey.cache;
 
 import com.tmoncorp.mobile.util.common.cache.Cache;
+import com.tmoncorp.mobile.util.common.cache.HttpCacheSupport;
+import com.tmoncorp.mobile.util.common.cache.HttpCacheSupportImpl;
+import com.tmoncorp.mobile.util.common.cache.HttpServletRequestContainer;
 import org.aopalliance.intercept.ConstructorInterceptor;
 import org.aopalliance.intercept.MethodInterceptor;
 import org.glassfish.hk2.api.Descriptor;
@@ -19,7 +22,7 @@ import java.util.Collections;
 import java.util.List;
 
 @Service
-public class CacheInterceptorService implements InterceptionService {
+public class CacheInterceptorService implements InterceptionService, HttpServletRequestContainer {
 
 	private static final Logger LOG = LoggerFactory.getLogger(CacheInterceptorService.class);
 	private final List<MethodInterceptor> intercepters;
@@ -31,8 +34,11 @@ public class CacheInterceptorService implements InterceptionService {
 	@Context
 	private HttpServletRequest request;
 
+	private HttpCacheSupport cacheSupport;
+
 	public CacheInterceptorService() {
 
+		cacheSupport=new HttpCacheSupportImpl(this);
 		intercepter = new CacheInterceptor(this);
 		intercepters = Collections.<MethodInterceptor> singletonList(intercepter);
 
@@ -68,9 +74,11 @@ public class CacheInterceptorService implements InterceptionService {
 	}
 
 	public CacheRepository getCacheRepo() {
+		cacheRepo.setHttpCache(cacheSupport);
 		return cacheRepo;
 	}
 
+	@Override
 	public HttpServletRequest getHttpServletRequest() {
 		return request;
 	}

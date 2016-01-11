@@ -10,7 +10,7 @@ import org.slf4j.LoggerFactory;
 import java.lang.reflect.Method;
 
 
-public class CacheInterceptor implements MethodInterceptor ,EtagRegister {
+public class CacheInterceptor implements MethodInterceptor{
 	private static final Logger LOG = LoggerFactory.getLogger(CacheInterceptor.class);
 
 	private static final String KEY_SEPERATOR = ":";
@@ -18,12 +18,14 @@ public class CacheInterceptor implements MethodInterceptor ,EtagRegister {
 
 	private final CacheInterceptorService ciService;
 	private final MemoryCache memoryCache;
+	private HttpCacheSupport cacheSupport;
 
 	public CacheInterceptor(CacheInterceptorService service) {
 		ciService = service;
+		cacheSupport=new HttpCacheSupportImpl(service);
 		memoryCache = new MemoryCache();
-		service.getCacheRepo().setEtagRegister(this);
-		memoryCache.setEtagRegister(this);
+		//service.getCacheRepo().setHttpCache(cacheSupport);
+		memoryCache.setHttpCache(cacheSupport);
 	}
 
 	private String makeKeyName(MethodInvocation invo) {
@@ -94,22 +96,18 @@ public class CacheInterceptor implements MethodInterceptor ,EtagRegister {
 	}
 
 	private void generateEtag(String keyName, Cache cacheInfo, MethodInvocation mi){
-		if (cacheInfo.browserCache() == BrowserCache.ETAG){
+		if (cacheInfo.browserCache() == HttpCacheType.ETAG){
 			String etag= SecurityUtils.getSHA1String(keyName + cacheInfo.expiration());
 			ciService.getCacheRepo().set("e:"+keyName,etag,cacheInfo.expiration());
 			ciService.getCacheRepo().set(etag,"e:"+keyName,cacheInfo.expiration());
-			setEtag(etag);
+			cacheSupport.setEtag(etag);
 		}
 	}
 
 	private void setEtagCache(String keyName){
 		Object etag=ciService.getCacheRepo().get("e:"+keyName);
 		if (etag != null)
-			setEtag((String)etag);
-	}
-
-	public void setEtag(String etag){
-		ciService.getHttpServletRequest().setAttribute("etag",etag);
+			cacheSupport.setEtag((String)etag);
 	}
 
 

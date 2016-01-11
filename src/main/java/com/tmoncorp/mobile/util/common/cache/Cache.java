@@ -20,5 +20,5 @@ public @interface Cache {
 	boolean isPlatformDependent() default true;
 	boolean setOnError() default true;
 	String name() default "";
-	BrowserCache browserCache() default BrowserCache.EXPIRE_TIME;
+	HttpCacheType browserCache() default HttpCacheType.EXPIRE_TIME;
 }
