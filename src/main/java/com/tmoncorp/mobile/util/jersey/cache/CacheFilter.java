@@ -1,13 +1,14 @@
 package com.tmoncorp.mobile.util.jersey.cache;
 
-import com.tmoncorp.mobile.util.common.cache.HttpCacheConstant;
-import com.tmoncorp.mobile.util.common.cache.HttpCacheType;
+import com.tmoncorp.mobile.util.common.cache.httpcache.HttpCacheConstant;
+import com.tmoncorp.mobile.util.common.cache.httpcache.HttpCacheType;
 import com.tmoncorp.mobile.util.common.cache.Cache;
 
 import javax.inject.Inject;
 import javax.ws.rs.container.*;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.HttpHeaders;
+import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.ext.Provider;
 import java.io.IOException;
@@ -19,7 +20,7 @@ public class CacheFilter implements ContainerRequestFilter, ContainerResponseFil
 	private ResourceInfo resourceInfo;
 
 	@Inject
-	private CacheRepository cacheRepo;
+	private JerseyMemCacheRepository cacheRepo;
 
 	private boolean hasNotEtag(){
 		Cache cache=resourceInfo.getResourceMethod().getAnnotation(Cache.class);
@@ -27,7 +28,7 @@ public class CacheFilter implements ContainerRequestFilter, ContainerResponseFil
 	}
 	private boolean isNotModified(ContainerRequestContext requestContext){
 		String etag=requestContext.getHeaderString(HttpHeaders.IF_NONE_MATCH);
-		if (cacheRepo.get(etag) != null)
+		if (cacheRepo.getRaw(etag) != null)
 			return true;
 		return false;
 	}
@@ -41,13 +42,24 @@ public class CacheFilter implements ContainerRequestFilter, ContainerResponseFil
 	}
 
 
-
 	@Override public void filter(ContainerRequestContext requestContext, ContainerResponseContext responseContext) throws IOException {
-		responseContext.getHeaders().add(HttpHeaders.EXPIRES,requestContext.getProperty(HttpCacheConstant.EXPIRE));
 
-		if (hasNotEtag())
+		MultivaluedMap<String,Object> responseHeaders=responseContext.getHeaders();
+
+		Cache cache=resourceInfo.getResourceMethod().getAnnotation(Cache.class);
+		if (cache == null)
 			return;
-		responseContext.getHeaders().add(HttpHeaders.ETAG,requestContext.getProperty(HttpCacheConstant.ETAG));
+
+		String expireTime= (String)requestContext.getProperty(HttpCacheConstant.EXPIRE);
+		if (expireTime !=null && !expireTime.isEmpty())
+			responseHeaders.add(HttpHeaders.EXPIRES,expireTime);
+
+		if (cache.compress())
+			responseHeaders.add(HttpHeaders.CONTENT_ENCODING,"gzip");
+
+		if (cache.browserCache() != HttpCacheType.ETAG)
+			return;
+		responseHeaders.add(HttpHeaders.ETAG,requestContext.getProperty(HttpCacheConstant.ETAG));
 	}
 }
 

@@ -1,4 +1,4 @@
-package com.tmoncorp.mobile.util.common.cache;
+package com.tmoncorp.mobile.util.common.cache.httpcache;
 
 
 public interface HttpCacheInfoContainer {

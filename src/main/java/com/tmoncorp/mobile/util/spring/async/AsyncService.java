@@ -11,6 +11,7 @@ import javax.annotation.PreDestroy;
 
 import com.tmoncorp.mobile.util.common.async.AsyncExecutor;
 import com.tmoncorp.mobile.util.common.async.AsyncTask;
+import com.tmoncorp.mobile.util.common.async.AsyncWorker;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
@@ -21,7 +22,7 @@ import com.tmoncorp.mobile.util.spring.clientinfo.ClientInfoService;
 
 
 @Service
-public class AsyncService {
+public class AsyncService implements AsyncWorker{
 	
 
 	private final AsyncExecutor excutor;
@@ -55,6 +56,8 @@ public class AsyncService {
 
 		return excutor.processAsyncMergeList(datas,call);
 	}
-	
-	
+
+	@Override public void submitAsync(Runnable run) {
+		excutor.submitAsync(run);
+	}
 }

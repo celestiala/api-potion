@@ -3,6 +3,7 @@ package com.tmoncorp.mobile.util.spring.cache;
 import com.tmoncorp.mobile.util.common.cache.Cache;
 import com.tmoncorp.mobile.util.common.cache.CacheItem;
 import com.tmoncorp.mobile.util.common.cache.CacheProvider;
+import org.aopalliance.intercept.MethodInvocation;
 import org.springframework.beans.factory.annotation.Autowired;
 
 /**
@@ -10,7 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
  * Not Tested, Do not Use This Class yet.
  *
  */
-public class CompositeCache implements CacheProvider {
+public class CompositeCache implements CacheProvider{
 
 	@Autowired
 	private MemcacheClient memcacheClient;
@@ -26,12 +27,11 @@ public class CompositeCache implements CacheProvider {
 
 	}
 
-	//TODO cache expiration
 	@Override
-	public Object get(String keyName) {
-		Object cachedItem=memoryCache.get(keyName);
+	public Object get(Cache cacheInfo, MethodInvocation mi) {
+		Object cachedItem=memoryCache.get(cacheInfo,mi);
 		if (cachedItem == null)
-			cachedItem=memcacheClient.get(keyName);
+			cachedItem=memcacheClient.get(cacheInfo,mi);
 		if (cachedItem == null)
 			return null;
 

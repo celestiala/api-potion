@@ -1,18 +1,19 @@
 package com.tmoncorp.mobile.util.jersey.cache;
 
 import com.tmoncorp.mobile.util.common.cache.Cache;
-import com.tmoncorp.mobile.util.common.cache.HttpCacheSupport;
-import com.tmoncorp.mobile.util.common.cache.HttpCacheSupportImpl;
-import com.tmoncorp.mobile.util.common.cache.HttpServletRequestContainer;
+import com.tmoncorp.mobile.util.common.cache.httpcache.HttpCacheSupport;
+import com.tmoncorp.mobile.util.common.cache.httpcache.HttpCacheSupportImpl;
+import com.tmoncorp.mobile.util.common.cache.httpcache.HttpServletRequestContainer;
 import org.aopalliance.intercept.ConstructorInterceptor;
 import org.aopalliance.intercept.MethodInterceptor;
-import org.glassfish.hk2.api.Descriptor;
 import org.glassfish.hk2.api.Filter;
 import org.glassfish.hk2.api.InterceptionService;
 import org.jvnet.hk2.annotations.Service;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 
+import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.core.Context;
@@ -26,10 +27,11 @@ public class CacheInterceptorService implements InterceptionService, HttpServlet
 
 	private static final Logger LOG = LoggerFactory.getLogger(CacheInterceptorService.class);
 	private final List<MethodInterceptor> intercepters;
-	private final CacheInterceptor intercepter;
+	private final JerseyCacheInterceptor intercepter;
+
 
 	@Inject
-	private CacheRepository cacheRepo;
+	private JerseyMemCacheRepository cacheRepo;
 
 	@Context
 	private HttpServletRequest request;
@@ -39,29 +41,28 @@ public class CacheInterceptorService implements InterceptionService, HttpServlet
 	public CacheInterceptorService() {
 
 		cacheSupport=new HttpCacheSupportImpl(this);
-		intercepter = new CacheInterceptor(this);
+		intercepter = new JerseyCacheInterceptor(this);
 		intercepters = Collections.<MethodInterceptor> singletonList(intercepter);
 
 	}
 
+	@PostConstruct
+	public void setRepository(){
+		intercepter.init();
+	}
+
 	@Override
 	public List<ConstructorInterceptor> getConstructorInterceptors(Constructor<?> arg0) {
-
 		return null;
-
 	}
 
 	@Override
 	public Filter getDescriptorFilter() {
-		// TODO Auto-generated method stub
-		return new Filter() {
-			@Override
-			public boolean matches(final Descriptor d) {
+		return d->{
 				final String clazz = d.getImplementation();
 				return clazz.startsWith("com.tmoncorp.mobile.repository")
-				        || clazz.startsWith("com.tmoncorp.mobile.resource");
-			}
-		};
+						|| clazz.startsWith("com.tmoncorp.mobile.resource");
+			};
 	}
 
 	@Override
@@ -73,7 +74,7 @@ public class CacheInterceptorService implements InterceptionService, HttpServlet
 		return null;
 	}
 
-	public CacheRepository getCacheRepo() {
+	public JerseyMemCacheRepository getCacheRepo() {
 		cacheRepo.setHttpCache(cacheSupport);
 		return cacheRepo;
 	}

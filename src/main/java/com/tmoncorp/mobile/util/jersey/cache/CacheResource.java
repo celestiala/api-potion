@@ -13,7 +13,7 @@ import javax.ws.rs.core.MediaType;
 public class CacheResource {
 
 	@Inject
-	private CacheRepository cacheRepo;
+	private JerseyMemCacheRepository cacheRepo;
 	@GET
 	@Path("/mode/{mode}")
 	@Produces(MediaType.APPLICATION_JSON)

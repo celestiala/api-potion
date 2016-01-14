@@ -1,5 +1,7 @@
 package com.tmoncorp.mobile.util.common.cache;
 
+import com.tmoncorp.mobile.util.common.cache.httpcache.HttpCacheType;
+
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Inherited;
@@ -13,11 +15,12 @@ import java.lang.annotation.Target;
 @Documented
 public @interface Cache {
 	
-	public static final int DEFAULT_EXPIRETIME = 5*60; //seconds
+	int DEFAULT_EXPIRETIME = 5*60; //seconds
 	int expiration() default DEFAULT_EXPIRETIME;
 	CacheType type() default CacheType.SYNC;
-	SyncType syncType() default SyncType.SYNC;
+	CacheStorage storage() default CacheStorage.MEMCACHED;
 	boolean isPlatformDependent() default true;
+	boolean compress() default false;
 	boolean setOnError() default true;
 	String name() default "";
 	HttpCacheType browserCache() default HttpCacheType.EXPIRE_TIME;

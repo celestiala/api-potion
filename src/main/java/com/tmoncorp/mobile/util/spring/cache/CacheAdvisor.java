@@ -24,7 +24,8 @@ public class CacheAdvisor extends AbstractPointcutAdvisor {
             StaticMethodMatcherPointcut() {
                 @Override
                 public boolean matches(Method method, Class<?> targetClass) {
-                    return method.isAnnotationPresent(Cache.class);
+
+	                return method.isAnnotationPresent(Cache.class);
                 }
             };
             
