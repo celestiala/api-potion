@@ -33,7 +33,6 @@
 		            
 		            <configuration>
 		                 <includes>
-				            <include>com/tmoncorp/mobile/util/common/**/*</include>
 				            <include>com/tmoncorp/mobile/util/spring/**/*</include>
             			</includes>
             			

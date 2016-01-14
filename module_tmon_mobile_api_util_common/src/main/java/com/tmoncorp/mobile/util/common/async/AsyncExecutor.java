@@ -1,7 +1,7 @@
 package com.tmoncorp.mobile.util.common.async;
 
 import com.tmoncorp.mobile.util.common.clientinfo.ClientInfo;
-import com.tmoncorp.mobile.util.spring.clientinfo.ClientInfoService;
+import com.tmoncorp.mobile.util.common.clientinfo.ClientInfoProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
@@ -60,19 +60,19 @@ public class AsyncExecutor {
 	private <T,K> Vector<Future<T>> requestAsyncList(List<K> datas,AsyncTask<K,T> call){
 		Vector<Future<T>> futureList=new Vector<>();
 
-		final ClientInfo info=ClientInfoService.getInfo();
+		final ClientInfo info=ClientInfoProvider.getInfo();
 
 		for (K data : datas) {
 
 			Future<T> f=submitAsync(new Callable<T>(){
 				@Override
 				public T call() throws Exception {
-					ClientInfoService.setInfo(info);
+					ClientInfoProvider.setInfo(info);
 					T result;
 					try{
 						result=call.async(data);
 					}finally {
-						ClientInfoService.clean();
+						ClientInfoProvider.clean();
 					}
 					return result;
 
