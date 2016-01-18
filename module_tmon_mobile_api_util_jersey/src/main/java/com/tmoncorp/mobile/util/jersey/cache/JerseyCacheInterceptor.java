@@ -3,15 +3,11 @@ package com.tmoncorp.mobile.util.jersey.cache;
 import com.tmoncorp.mobile.util.common.cache.*;
 import com.tmoncorp.mobile.util.common.cache.httpcache.HttpCacheSupport;
 import com.tmoncorp.mobile.util.common.cache.httpcache.HttpCacheSupportImpl;
-import com.tmoncorp.mobile.util.common.cache.httpcache.HttpCacheType;
-import com.tmoncorp.mobile.util.common.security.Compress;
-import com.tmoncorp.mobile.util.common.security.SecurityUtils;
-import org.aopalliance.intercept.MethodInterceptor;
+
 import org.aopalliance.intercept.MethodInvocation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.lang.reflect.Method;
 import java.util.EnumMap;
 
 public class JerseyCacheInterceptor extends CacheInterceptor{
@@ -55,10 +51,11 @@ public class JerseyCacheInterceptor extends CacheInterceptor{
 	@Override
 	public Object invoke(MethodInvocation mi) throws Throwable {
 
+		LOG.debug("method invoked : {}",mi.getMethod());
 		JerseyMemCacheRepository cacheRepo = ciService.getCacheRepo();
 		if (cacheRepo == null || cacheRepo.getMode() ==CacheMode.OFF)
 			return mi.proceed();
-
+		LOG.debug("cache mode on");
 		return super.invoke(mi);
 	}
 

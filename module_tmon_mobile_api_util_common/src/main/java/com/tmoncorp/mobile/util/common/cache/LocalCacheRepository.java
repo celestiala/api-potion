@@ -1,10 +1,32 @@
 package com.tmoncorp.mobile.util.common.cache;
 
+import java.time.LocalDateTime;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class LocalCacheRepository implements CacheRepository{
 
-	private final ConcurrentHashMap<String, Object> objectCache;
+	private final ConcurrentHashMap<String, LocalCacheItem> objectCache;
+
+	class LocalCacheItem{
+		private Object item;
+		private LocalDateTime expire;
+
+		public Object getItem() {
+			return item;
+		}
+
+		public void setItem(Object item) {
+			this.item = item;
+		}
+
+		public LocalDateTime getExpire() {
+			return expire;
+		}
+
+		public void setExpire(LocalDateTime expire) {
+			this.expire = expire;
+		}
+	}
 
 	public LocalCacheRepository() {
 		objectCache = new ConcurrentHashMap<>();
@@ -12,11 +34,25 @@ public class LocalCacheRepository implements CacheRepository{
 
 
 	@Override public void setRaw(String keyName, Object value, int expire) {
-		objectCache.put(keyName,value);
+		LocalCacheItem item = new LocalCacheItem();
+		item.setItem(value);
+		item.setExpire(LocalDateTime.now().plusSeconds(expire));
+		objectCache.put(keyName,item);
 	}
 
 	@Override public Object getRaw(String keyName) {
-		return objectCache.get(keyName);
+		LocalCacheItem item = objectCache.get(keyName);
+		if (item == null)
+			return null;
+
+		if(item.getExpire().isAfter(LocalDateTime.now())) {
+			return item.getItem();
+		}
+		else{
+			//objectCache.remove(keyName);
+			return null;
+		}
+
 	}
 
 	@Override public void removeRaw(String keyName) {

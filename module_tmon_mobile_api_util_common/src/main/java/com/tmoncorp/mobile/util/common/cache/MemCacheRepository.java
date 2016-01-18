@@ -7,6 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
 
 public class MemCacheRepository implements CacheRepository {
 	private static final Logger LOG = LoggerFactory.getLogger(MemCacheRepository.class);
@@ -35,7 +36,7 @@ public class MemCacheRepository implements CacheRepository {
 
 	@Override public void setRaw(String keyName, Object value, int expire) {
 		try {
-			client.set(keyName, expire, value);
+			client.set(makeRawKey(keyName), expire, value);
 		} catch (Exception e){
 			LOG.error("ERROR on set a cache {}",e.getMessage());
 		}

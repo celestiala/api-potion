@@ -10,6 +10,8 @@
 		<module>module_tmon_mobile_api_util_common</module>
 		<module>module_tmon_mobile_api_util_jersey</module>
 		<module>module_tmon_mobile_api_util_spring</module>
+		<module>test_spring</module>
+		<module>test_jersey</module>
 	</modules>
 
 	<build>

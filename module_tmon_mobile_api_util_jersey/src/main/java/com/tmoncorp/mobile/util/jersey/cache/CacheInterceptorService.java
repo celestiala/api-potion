@@ -48,6 +48,7 @@ public class CacheInterceptorService implements InterceptionService, HttpServlet
 
 	@PostConstruct
 	public void setRepository(){
+		LOG.debug("postConstruct called");
 		intercepter.init();
 	}
 
