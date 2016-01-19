@@ -133,13 +133,10 @@ public class CacheService implements CacheProvider, HttpCacheInfoContainer{
 
 	public Object get(Cache cacheInfo,MethodInvocation mi) {
 
-
 		String keyName=makeKeyName(mi,cacheInfo);
-		LOG.debug("cache item {}",keyName);
 		Object item = cacheRepository.getRaw(keyName);
 
 		if (item == null) {
-			LOG.debug("item is null {}",keyName);
 			if (cacheInfo.type() != CacheType.ASYNC_ONLY) {
 				return makeCache(keyName, cacheInfo, mi);
 			}else{
@@ -150,27 +147,29 @@ public class CacheService implements CacheProvider, HttpCacheInfoContainer{
 			if (item instanceof CacheItem){
 				CacheItem cache=(CacheItem)item;
 				if (isExpiredCache(cache)) {
-					if (cacheInfo.type() != CacheType.SYNC) {
-						Object value=cache.getValue();
-						makeAsyncCache(keyName,cacheInfo,mi);
-						return value;
-					}else {
-						cacheRepository.removeRaw(keyName);
-						LOG.debug("sync cache expired");
-						if (cacheInfo.type() != CacheType.ASYNC_ONLY) {
-							return makeCache(keyName, cacheInfo, mi);
-						}
-					}
+					return expireCache(keyName,cache,cacheInfo,mi);
 				} else {
 					LOG.debug("cache not expired {}", cache.getExpireTime());
 					setExpire(cache);
 					return cache.getValue();
 				}
-			}else{
-				LOG.debug("not a CacheItem {}");
 			}
 		}
 		return item;
+	}
+
+	private Object expireCache(String keyName,CacheItem item,Cache cacheInfo,MethodInvocation mi){
+		if (cacheInfo.type() == CacheType.ASYNC_ONLY)
+			return null;
+
+		if (cacheInfo.type() == CacheType.SYNC) {
+			cacheRepository.removeRaw(keyName);
+			return makeCache(keyName, cacheInfo, mi);
+		}else {
+			Object value=item.getValue();
+			makeAsyncCache(keyName,cacheInfo,mi);
+			return value;
+		}
 	}
 
 	protected void makeExpiredCache(String keyName, Cache cacheinfo, MethodInvocation mi){
@@ -194,7 +193,6 @@ public class CacheService implements CacheProvider, HttpCacheInfoContainer{
 			LOG.error("Fail to make a Async cache : {}", e);
 		}
 		set(keyName,result,cacheInfo);
-		LOG.debug("make Cache : {}",keyName);
 		return result;
 
 	}
@@ -205,12 +203,11 @@ public class CacheService implements CacheProvider, HttpCacheInfoContainer{
 				try {
 					makeExpiredCache(keyName,cacheinfo,mi);
 				} catch (Throwable e) {
-					LOG.debug("Cache set exception {}", e);
+					LOG.warn("Cache set exception {}", e);
 				}
 			};
 
 		asyncWorker.submitAsync(cacheRequest);
-
 	}
 
 	protected boolean isExpiredCache(CacheItem item){
@@ -230,6 +227,5 @@ public class CacheService implements CacheProvider, HttpCacheInfoContainer{
 	public HttpCacheSupport getHttpCache() {
 		return httpCacheSupport;
 	}
-
 
 }
