@@ -6,7 +6,7 @@
     <groupId>com.tmoncorp.mobile</groupId>
     <packaging>war</packaging>
     <version>1.0-SNAPSHOT</version>
-    <name>mobile-gateway</name>
+    <name>test_jersey</name>
     <artifactId>test_jersey</artifactId>
 	<profiles>
 		<profile>
@@ -111,13 +111,6 @@
 			<groupId>org.glassfish.jersey.ext.rx</groupId>
 			<artifactId>jersey-rx-client-rxjava</artifactId>
 		</dependency>
-
-		<!-- <dependency>
-			<groupId>org.glassfish.jersey</groupId>
-			<artifactId>jax-rs-ri</artifactId>
-			<version>2.0-rc1</version>
-		</dependency>
-		 -->
 		<dependency>
 			<groupId>org.glassfish.jersey.connectors</groupId>
 			<artifactId>jersey-apache-connector</artifactId>
