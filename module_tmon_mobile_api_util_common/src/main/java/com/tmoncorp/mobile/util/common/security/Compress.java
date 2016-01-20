@@ -1,10 +1,18 @@
 package com.tmoncorp.mobile.util.common.security;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.zip.GZIPOutputStream;
 
 public class Compress {
+	private static final Logger LOG = LoggerFactory.getLogger(Compress.class);
+
+	private Compress(){
+		throw new AssertionError("static utility class");
+	}
 
 	public static byte[] toGzipByte(String data){
 		ByteArrayOutputStream bos = new ByteArrayOutputStream(data.length());
@@ -18,7 +26,7 @@ public class Compress {
 			return compressed;
 
 		} catch (IOException e) {
-			e.printStackTrace();
+			LOG.error("GZip compress failed : {}",e.getMessage());
 		}
 		return null;
 	}

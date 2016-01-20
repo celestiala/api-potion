@@ -23,7 +23,6 @@ public class ManifestService {
 		try {
 			mf.read(resourceAsStream);
 		} catch (IOException e) {
-			e.printStackTrace();
 			return null;
 		}
 

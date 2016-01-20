@@ -187,10 +187,13 @@ public class CacheService implements CacheProvider, HttpCacheInfoContainer{
 				result =Compress.toGzipByte((String)mi.proceed());
 			else
 				result =mi.proceed();
-		} catch (Throwable e){
+		} catch (Exception e) {
 			if (cacheInfo.setOnError())
 				cacheRepository.removeRaw(keyName);
 			LOG.error("Fail to make a Async cache : {}", e);
+		} catch (Throwable e){
+			LOG.error("Fail to make a Async cache, error : {}", e);
+			throw new Error(e);
 		}
 		set(keyName,result,cacheInfo);
 		return result;
@@ -202,7 +205,7 @@ public class CacheService implements CacheProvider, HttpCacheInfoContainer{
 		Runnable cacheRequest = ()->{
 				try {
 					makeExpiredCache(keyName,cacheinfo,mi);
-				} catch (Throwable e) {
+				} catch (Exception e) {
 					LOG.warn("Cache set exception {}", e);
 				}
 			};

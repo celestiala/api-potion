@@ -3,8 +3,10 @@ package com.tmoncorp.mobile.util.spring.clientinfo;
 import com.tmoncorp.mobile.util.common.clientinfo.ClientPlatform;
 
 public class LagacyPlatformTransrator {
-	
-	
+
+	private LagacyPlatformTransrator(){
+		throw new AssertionError("static utility class");
+	}
 	
 	private static ClientPlatform fromPrefix(String platform){
 		

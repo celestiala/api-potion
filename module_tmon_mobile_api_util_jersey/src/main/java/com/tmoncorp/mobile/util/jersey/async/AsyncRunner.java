@@ -5,6 +5,9 @@ import com.tmoncorp.mobile.util.common.async.AsyncTask;
 import com.tmoncorp.mobile.util.common.async.AsyncWorker;
 import org.glassfish.jersey.server.spi.Container;
 import org.glassfish.jersey.server.spi.ContainerLifecycleListener;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import javax.inject.Singleton;
 import java.util.List;
 import java.util.concurrent.Callable;
@@ -16,6 +19,8 @@ public class AsyncRunner implements ContainerLifecycleListener,AsyncWorker {
 
 	private final AsyncExecutor excutor;
 	private static AsyncRunner instance;
+
+	private static final Logger LOG = LoggerFactory.getLogger(AsyncRunner.class);
 
 	public AsyncRunner(){
 		excutor=new AsyncExecutor();
@@ -49,7 +54,7 @@ public class AsyncRunner implements ContainerLifecycleListener,AsyncWorker {
 		try{
 			excutor.init();
 		}catch (Exception e){
-			e.printStackTrace();
+			LOG.error("AsyncRunner startup fail");
 		}
 	}
 
@@ -62,7 +67,7 @@ public class AsyncRunner implements ContainerLifecycleListener,AsyncWorker {
 		try {
 			excutor.cleanUp();
 		} catch (Exception e) {
-			e.printStackTrace();
+			LOG.error("AsyncRunner Error on clean up during Shutdown");
 		}
 	}
 

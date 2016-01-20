@@ -2,6 +2,7 @@ package com.tmoncorp.mobile.util.common.security;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.util.Assert;
 
 import javax.crypto.Cipher;
 import javax.crypto.spec.SecretKeySpec;
@@ -18,6 +19,10 @@ public class SecurityUtils {
 	private final static String CHAR_ENCODING="UTF-8";
 
 	private static final Logger LOG = LoggerFactory.getLogger(SecurityUtils.class);
+
+	private SecurityUtils(){
+		throw new AssertionError("static utility class");
+	}
 
 	public static StringBuilder byteToHex(byte[] bytes){
 		StringBuilder hexString = new StringBuilder();
@@ -44,7 +49,7 @@ public class SecurityUtils {
 			byte[] byteData = md.digest(str);
 			return byteData;
 		} catch (Exception e) {
-			LOG.warn("could not make hash string");
+			LOG.warn("could not make hash string, {}",e.getMessage());
 			return null;
 		}
 	}
@@ -57,7 +62,7 @@ public class SecurityUtils {
 			cipher.init(mode, keySpec);
 			return cipher.doFinal(input);
 		}catch(Exception e){
-			LOG.warn("AES Cipher Exception occurred");
+			LOG.warn("AES Cipher Exception occurred, {}",e.getMessage());
 			return null;
 		}
 	}

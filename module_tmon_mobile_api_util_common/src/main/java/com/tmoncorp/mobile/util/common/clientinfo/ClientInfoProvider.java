@@ -2,27 +2,30 @@ package com.tmoncorp.mobile.util.common.clientinfo;
 
 public class ClientInfoProvider {
 
-	private static final ClientInfo defaultInfo;
+	private static final ClientInfo DEFAULT_INFO;
+	private static final ThreadLocal<ClientInfo> THREAD_LOCAL = new ThreadLocal<>();
 
 	static {
-		defaultInfo=new ClientInfo();
-		defaultInfo.setPlatform(ClientPlatform.MOBILE);
+		DEFAULT_INFO =new ClientInfo();
+		DEFAULT_INFO.setPlatform(ClientPlatform.MOBILE);
 	}
 
-	private static final ThreadLocal<ClientInfo> threadLocal = new ThreadLocal<>();
+	private ClientInfoProvider(){
+		throw new AssertionError("static utility class");
+	}
 
 	public static ClientInfo getInfo(){
-		ClientInfo info=threadLocal.get();
+		ClientInfo info= THREAD_LOCAL.get();
 		if (info == null)
-			info=defaultInfo;
+			info= DEFAULT_INFO;
 		return info;
 	}
 
 	public static void setInfo(ClientInfo info){
-		threadLocal.set(info);
+		THREAD_LOCAL.set(info);
 	}
 
 	public static void clean(){
-		threadLocal.remove();
+		THREAD_LOCAL.remove();
 	}
 }

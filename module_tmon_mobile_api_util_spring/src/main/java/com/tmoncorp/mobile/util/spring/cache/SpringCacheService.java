@@ -41,8 +41,8 @@ public class SpringCacheService extends CacheService {
 			ClientInfoService.setInfo(info);
 			try {
 				makeExpiredCache(keyName,cacheinfo,mi);
-			} catch (Throwable e) {
-				LOG.debug("Cache set exception {}", e);
+			} catch (Exception e) {
+				LOG.warn("Cache set exception {}", e);
 			} finally {
 				ClientInfoService.clean();
 			}

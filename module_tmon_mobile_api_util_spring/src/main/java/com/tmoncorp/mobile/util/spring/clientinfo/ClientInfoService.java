@@ -5,6 +5,9 @@ import com.tmoncorp.mobile.util.common.clientinfo.ClientInfoProvider;
 
 public class ClientInfoService {
 
+	private ClientInfoService(){
+		throw new AssertionError("static utility class");
+	}
 
 	public static ClientInfo getInfo(){
 		return ClientInfoProvider.getInfo();
