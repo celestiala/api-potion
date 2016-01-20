@@ -7,7 +7,7 @@ public class LocalCacheRepository implements CacheRepository{
 
 	private final ConcurrentHashMap<String, LocalCacheItem> objectCache;
 
-	class LocalCacheItem{
+	static class LocalCacheItem{
 		private Object item;
 		private LocalDateTime expire;
 

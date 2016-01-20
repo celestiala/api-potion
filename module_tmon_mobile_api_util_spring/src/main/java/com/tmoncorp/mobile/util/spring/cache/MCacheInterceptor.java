@@ -36,7 +36,7 @@ public class MCacheInterceptor implements MethodInterceptor {
         return client.getPrefix();
     }
 
-        @Override
+    @Override
     public Object invoke(final MethodInvocation mi) throws Throwable {
         if (cacheMode==CacheMode.OFF)
             return mi.proceed();
