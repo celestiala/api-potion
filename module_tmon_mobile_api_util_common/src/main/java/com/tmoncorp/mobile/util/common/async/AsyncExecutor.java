@@ -5,12 +5,9 @@ import com.tmoncorp.mobile.util.common.clientinfo.ClientInfoProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
-import org.springframework.stereotype.Service;
 
-import javax.annotation.PostConstruct;
-import javax.annotation.PreDestroy;
 import java.util.List;
-import java.util.Vector;
+import java.util.LinkedList;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
@@ -57,16 +54,13 @@ public class AsyncExecutor {
 		return pool.submit(call);
 	}
 
-	private <T,K> Vector<Future<T>> requestAsyncList(List<K> datas,AsyncTask<K,T> call){
-		Vector<Future<T>> futureList=new Vector<>();
+	private <T,K> LinkedList<Future<T>> requestAsyncList(List<K> datas,AsyncTask<K,T> call){
+		LinkedList<Future<T>> futureList=new LinkedList<>();
 
 		final ClientInfo info=ClientInfoProvider.getInfo();
 
 		for (K data : datas) {
-
-			Future<T> f=submitAsync(new Callable<T>(){
-				@Override
-				public T call() throws Exception {
+			Future<T> f=submitAsync(()->{
 					ClientInfoProvider.setInfo(info);
 					T result;
 					try{
@@ -74,36 +68,30 @@ public class AsyncExecutor {
 					}finally {
 						ClientInfoProvider.clean();
 					}
-					return result;
-
-
-				}});
+					return result; });
 			futureList.add(f);
-
 		}
 		return futureList;
 	}
 
-	private <T> List<T> gatherList(Vector<Future<T>> futureList){
-		Vector<T> list = new Vector<>();
+
+
+	private <T> List<T> gatherList(LinkedList<Future<T>> futureList){
+		LinkedList<T> list = new LinkedList<>();
 		int tasktime=0;
 		while(futureList.size() > 0){
 
-			Future<T> m=futureList.firstElement();
+			Future<T> m=futureList.getFirst();
 			if (m.isDone()){
-				T item;
 				try {
-					item = m.get();
+					T item = m.get();
 					if (item != null)
 						list.add(item);
 				} catch (InterruptedException e) {
 					LOG.debug("Async Task interrupted {} ",e);
 					break;
-				} catch (ExecutionException e) {
-					LOG.debug("Async Task excution exception {} ",e);
-					continue;
-				} catch (RuntimeException e){
-					LOG.debug("Async Task runtime exception {} ",e);
+				} catch (ExecutionException | RuntimeException e){
+					LOG.debug("Async Task exception {} ",e);
 					continue;
 				}
 				futureList.remove(m);
@@ -123,26 +111,22 @@ public class AsyncExecutor {
 		return list;
 	}
 
-	private <T> List<T> mergeListOrder(Vector<Future<List<T>>> futureList){
-		Vector<T> list = new Vector<>();
+	private <T> List<T> mergeListOrder(LinkedList<Future<List<T>>> futureList){
+		LinkedList<T> list = new LinkedList<>();
 		int tasktime=0;
 		while(futureList.size() > 0){
 
-			Future<List<T>> m=futureList.firstElement();
+			Future<List<T>> m=futureList.getFirst();
 			if (m.isDone()){
-				List<T> item;
 				try {
-					item = m.get();
+					List<T> item = m.get();
 					if (item != null)
 						list.addAll(item);
 				} catch (InterruptedException e) {
-					LOG.debug("Async Task interrupted {} ",e);
+					LOG.debug("Async Task merge list interrupted {} ",e);
 					break;
-				} catch (ExecutionException e) {
-					LOG.debug("Async Task excution exception {} ",e);
-					continue;
-				} catch (RuntimeException e){
-					LOG.debug("Async Task runtime exception {} ",e);
+				} catch (ExecutionException | RuntimeException e){
+					LOG.debug("Async Task merge list exception {} ",e);
 					continue;
 				}
 				futureList.remove(m);
@@ -164,13 +148,13 @@ public class AsyncExecutor {
 	
 	public <T,K> List<T> processAsyncList(List<K> datas,AsyncTask<K,T> call){
 
-		Vector<Future<T>> futureList=requestAsyncList(datas,call);
+		LinkedList<Future<T>> futureList=requestAsyncList(datas,call);
 		return gatherList(futureList);
 	}
 
 	public <K,T> List<T> processAsyncMergeList(List<K> datas,AsyncTask<K,List<T>> call){
 
-		Vector<Future<List<T>>> futureList=requestAsyncList(datas,call);
+		LinkedList<Future<List<T>>> futureList=requestAsyncList(datas,call);
 		return mergeListOrder(futureList);
 	}
 	
