@@ -21,6 +21,10 @@ public class AsyncExecutor {
 	private static final int TASK_TIMEOUT=240*1000; //ms
 	private static final int TASK_DELAY=50;
 	private ThreadPoolTaskExecutor pool;
+
+	interface AsyncListAdder<T,A>{
+		void add(List<T> list,A item);
+	}
 	
 	public void init() throws Exception {
 		int maxPoolSize=Runtime.getRuntime().availableProcessors()*2;
@@ -74,19 +78,17 @@ public class AsyncExecutor {
 		return futureList;
 	}
 
-
-
-	private <T> List<T> gatherList(LinkedList<Future<T>> futureList){
+	private <T,A> List<T> getSortedList(LinkedList<Future<A>> futureList,AsyncListAdder<T,A> itemAdder){
 		LinkedList<T> list = new LinkedList<>();
 		int tasktime=0;
 		while(futureList.size() > 0){
 
-			Future<T> m=futureList.getFirst();
+			Future<A> m=futureList.getFirst();
 			if (m.isDone()){
 				try {
-					T item = m.get();
+					A item = m.get();
 					if (item != null)
-						list.add(item);
+						itemAdder.add(list,item);
 				} catch (InterruptedException e) {
 					LOG.debug("Async Task interrupted {} ",e);
 					break;
@@ -111,52 +113,17 @@ public class AsyncExecutor {
 		return list;
 	}
 
-	private <T> List<T> mergeListOrder(LinkedList<Future<List<T>>> futureList){
-		LinkedList<T> list = new LinkedList<>();
-		int tasktime=0;
-		while(futureList.size() > 0){
-
-			Future<List<T>> m=futureList.getFirst();
-			if (m.isDone()){
-				try {
-					List<T> item = m.get();
-					if (item != null)
-						list.addAll(item);
-				} catch (InterruptedException e) {
-					LOG.debug("Async Task merge list interrupted {} ",e);
-					break;
-				} catch (ExecutionException | RuntimeException e){
-					LOG.debug("Async Task merge list exception {} ",e);
-					continue;
-				}
-				futureList.remove(m);
-
-			}else{
-				if (TASK_TIMEOUT < tasktime)
-					break;
-				try {
-					tasktime+=TASK_DELAY;
-					Thread.sleep(TASK_DELAY);
-				} catch (InterruptedException e) {
-					LOG.debug("Async Task loop interrupted {} ",e);
-					break;
-				}
-			}
-		}
-		return list;
-	}
-	
 	public <T,K> List<T> processAsyncList(List<K> datas,AsyncTask<K,T> call){
 
 		LinkedList<Future<T>> futureList=requestAsyncList(datas,call);
-		return gatherList(futureList);
+		return getSortedList(futureList,(list,item)->list.add(item));
 	}
 
 	public <K,T> List<T> processAsyncMergeList(List<K> datas,AsyncTask<K,List<T>> call){
 
 		LinkedList<Future<List<T>>> futureList=requestAsyncList(datas,call);
-		return mergeListOrder(futureList);
+		return  getSortedList(futureList,(list,item)->list.addAll(item));
 	}
-	
+
 	
 }
