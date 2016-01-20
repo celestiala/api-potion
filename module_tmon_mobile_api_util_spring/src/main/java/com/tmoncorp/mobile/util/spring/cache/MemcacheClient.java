@@ -15,7 +15,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class MemcacheClient implements CacheProvider, CacheRepository{
 
-	private static Logger LOGGER = LoggerFactory.getLogger(CacheProvider.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(CacheProvider.class);
 	private static final String MEMCACHE_SERVER_PROPERTY="memcache.server";
 	private static final String ENVIRONMENT_PROPERTY="deploy.phase";
 	private static final String CACHE_PREFIX_PROPERTY="cache.prefix";

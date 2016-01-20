@@ -10,11 +10,11 @@ import java.util.zip.GZIPOutputStream;
 public class Compress {
 	private static final Logger LOG = LoggerFactory.getLogger(Compress.class);
 
-	private Compress(){
+	private Compress() {
 		throw new AssertionError("static utility class");
 	}
 
-	public static byte[] toGzipByte(String data){
+	public static byte[] toGzipByte(String data) {
 		ByteArrayOutputStream bos = new ByteArrayOutputStream(data.length());
 
 		try {
@@ -26,7 +26,7 @@ public class Compress {
 			return compressed;
 
 		} catch (IOException e) {
-			LOG.error("GZip compress failed : {}",e.getMessage());
+			LOG.error("GZip compress failed : {}", e.getMessage());
 		}
 		return null;
 	}

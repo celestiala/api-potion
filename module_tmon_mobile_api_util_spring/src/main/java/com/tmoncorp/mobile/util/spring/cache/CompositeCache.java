@@ -35,11 +35,6 @@ public class CompositeCache implements CacheProvider{
 		if (cachedItem == null)
 			return null;
 
-		if (cachedItem instanceof CacheItem){
-			CacheItem item=(CacheItem)cachedItem;
-
-		}
-
 		return cachedItem;
 	}
 }

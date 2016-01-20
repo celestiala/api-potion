@@ -1,12 +1,18 @@
 package com.tmoncorp.mobile.util.common.clientinfo;
 
 public class DeviceInfo {
-	public enum DeviceType{
-		ios,android,unknown
+	private static DeviceInfo defaultInfo = new DeviceInfo();
+
+	static {
+		defaultInfo.setDeviceType(DeviceType.unknown);
 	}
 
 	private DeviceType deviceType;
 	private String deviceVersion;
+
+	public static DeviceInfo getDefaultInfo() {
+		return defaultInfo;
+	}
 
 	public DeviceType getDeviceType() {
 		return deviceType;
@@ -24,13 +30,7 @@ public class DeviceInfo {
 		this.deviceVersion = deviceVersion;
 	}
 
-	private static DeviceInfo defaultInfo=new DeviceInfo();
-
-	static {
-		defaultInfo.setDeviceType(DeviceType.unknown);
-	}
-
-	public static DeviceInfo getDefaultInfo(){
-		return defaultInfo;
+	public enum DeviceType {
+		ios, android, unknown
 	}
 }

@@ -5,23 +5,23 @@ import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 
-public class HttpCacheSupportImpl implements HttpCacheSupport{
+public class HttpCacheSupportImpl implements HttpCacheSupport {
 
 	private HttpServletRequestContainer container;
 
-	public HttpCacheSupportImpl(HttpServletRequestContainer container){
-		this.container=container;
+	public HttpCacheSupportImpl(HttpServletRequestContainer container) {
+		this.container = container;
 	}
 
 	@Override
-	public void setEtag(String etag){
-		container.getHttpServletRequest().setAttribute(HttpCacheConstant.ETAG,etag);
+	public void setEtag(String etag) {
+		container.getHttpServletRequest().setAttribute(HttpCacheConstant.ETAG, etag);
 	}
 
 	@Override public void setExpire(LocalDateTime expire) {
 
-		ZonedDateTime zonedDateTime=expire.atZone(ZoneId.systemDefault());
+		ZonedDateTime zonedDateTime = expire.atZone(ZoneId.systemDefault());
 		if (container.getHttpServletRequest() != null)
-		container.getHttpServletRequest().setAttribute(HttpCacheConstant.EXPIRE,zonedDateTime.format(DateTimeFormatter.RFC_1123_DATE_TIME));
+			container.getHttpServletRequest().setAttribute(HttpCacheConstant.EXPIRE, zonedDateTime.format(DateTimeFormatter.RFC_1123_DATE_TIME));
 	}
 }

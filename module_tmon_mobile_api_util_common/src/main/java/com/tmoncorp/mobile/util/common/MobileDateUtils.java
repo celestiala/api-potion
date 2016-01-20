@@ -10,23 +10,23 @@ import java.util.Locale;
 
 public class MobileDateUtils {
 
-	private MobileDateUtils(){
+	private final static SimpleDateFormat FORMATTER = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss", Locale.KOREA);
+
+	private MobileDateUtils() {
 		throw new AssertionError("static utility class");
 	}
 
-	private final static SimpleDateFormat FORMATTER = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss", Locale.KOREA);
-
-	public static boolean isToday(String string){
-		Date date=null;
+	public static boolean isToday(String string) {
+		Date date = null;
 		try {
-			date= FORMATTER.parse(string);
+			date = FORMATTER.parse(string);
 		} catch (ParseException e) {
 			return false;
 		}
-		Calendar today=Calendar.getInstance();
-		Calendar compare=Calendar.getInstance();
+		Calendar today = Calendar.getInstance();
+		Calendar compare = Calendar.getInstance();
 		compare.setTime(date);
-		return DateUtils.isSameDay(today,compare);
+		return DateUtils.isSameDay(today, compare);
 
 	}
 }

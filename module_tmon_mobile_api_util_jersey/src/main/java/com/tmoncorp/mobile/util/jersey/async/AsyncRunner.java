@@ -54,20 +54,20 @@ public class AsyncRunner implements ContainerLifecycleListener,AsyncWorker {
 		try{
 			excutor.init();
 		}catch (Exception e){
-			LOG.error("AsyncRunner startup fail");
+			LOG.error("AsyncRunner startup fail, {}",e.getMessage());
 		}
 	}
 
 	@Override
 	public void onReload(Container container) {
-
+		//do nothing
 	}
 
 	@Override public void onShutdown(Container container) {
 		try {
 			excutor.cleanUp();
 		} catch (Exception e) {
-			LOG.error("AsyncRunner Error on clean up during Shutdown");
+			LOG.error("AsyncRunner Error on clean up during Shutdown, {}",e.getMessage());
 		}
 	}
 
