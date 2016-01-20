@@ -14,64 +14,60 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.Future;
 
 @Singleton
-public class AsyncRunner implements ContainerLifecycleListener,AsyncWorker {
+public class AsyncRunner implements ContainerLifecycleListener, AsyncWorker {
 
+    private static final Logger LOG = LoggerFactory.getLogger(AsyncRunner.class);
+    private static AsyncRunner instance;
+    private final AsyncExecutor excutor;
 
-	private final AsyncExecutor excutor;
-	private static AsyncRunner instance;
+    public AsyncRunner() {
+        excutor = new AsyncExecutor();
+        instance = this;
+    }
 
-	private static final Logger LOG = LoggerFactory.getLogger(AsyncRunner.class);
+    public static AsyncRunner getInstance() {
+        return instance;
+    }
 
-	public AsyncRunner(){
-		excutor=new AsyncExecutor();
-		instance=this;
-	}
-	
+    public <T> Future<T> submitAsync(Callable<T> call) {
 
-	public <T> Future<T> submitAsync(Callable<T> call){
+        return excutor.submitAsync(call);
+    }
 
-		return excutor.submitAsync(call);
-	}
+    @Override
+    public void submitAsync(Runnable run) {
+        excutor.submitAsync(run);
+    }
 
-	@Override
-	public void submitAsync(Runnable run){
-		excutor.submitAsync(run);
-	}
+    public <T, K> List<T> processAsyncList(List<K> datas, AsyncTask<K, T> call) {
 
+        return excutor.processAsyncList(datas, call);
+    }
 
-	public <T,K> List<T> processAsyncList(List<K> datas,AsyncTask<K,T> call){
+    public <K, T> List<T> processAsyncMergeList(List<K> datas, AsyncTask<K, List<T>> call) {
 
-		return excutor.processAsyncList(datas, call);
-	}
+        return excutor.processAsyncMergeList(datas, call);
+    }
 
-	public <K,T> List<T> processAsyncMergeList(List<K> datas,AsyncTask<K,List<T>> call){
+    @Override
+    public void onStartup(Container container) {
+        try {
+            excutor.init();
+        } catch (Exception e) {
+            LOG.error("AsyncRunner startup fail, {}", e.getMessage());
+        }
+    }
 
-		return excutor.processAsyncMergeList(datas, call);
-	}
+    @Override
+    public void onReload(Container container) {
+        //do nothing
+    }
 
-	@Override
-	public void onStartup(Container container) {
-		try{
-			excutor.init();
-		}catch (Exception e){
-			LOG.error("AsyncRunner startup fail, {}",e.getMessage());
-		}
-	}
-
-	@Override
-	public void onReload(Container container) {
-		//do nothing
-	}
-
-	@Override public void onShutdown(Container container) {
-		try {
-			excutor.cleanUp();
-		} catch (Exception e) {
-			LOG.error("AsyncRunner Error on clean up during Shutdown, {}",e.getMessage());
-		}
-	}
-
-	public static AsyncRunner getInstance(){
-		return instance;
-	}
+    @Override public void onShutdown(Container container) {
+        try {
+            excutor.cleanUp();
+        } catch (Exception e) {
+            LOG.error("AsyncRunner Error on clean up during Shutdown, {}", e.getMessage());
+        }
+    }
 }

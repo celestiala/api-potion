@@ -1,63 +1,51 @@
 package com.tmoncorp.mobile.util.spring.async;
 
-import java.util.List;
-import java.util.Vector;
-import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Future;
-
-import javax.annotation.PostConstruct;
-import javax.annotation.PreDestroy;
-
 import com.tmoncorp.mobile.util.common.async.AsyncExecutor;
 import com.tmoncorp.mobile.util.common.async.AsyncTask;
 import com.tmoncorp.mobile.util.common.async.AsyncWorker;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.stereotype.Service;
 
-import com.tmoncorp.mobile.util.common.clientinfo.ClientInfo;
-import com.tmoncorp.mobile.util.spring.clientinfo.ClientInfoService;
-
+import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
+import java.util.List;
+import java.util.concurrent.Callable;
+import java.util.concurrent.Future;
 
 @Service
-public class AsyncService implements AsyncWorker{
-	
+public class AsyncService implements AsyncWorker {
 
-	private final AsyncExecutor excutor;
+    private final AsyncExecutor excutor;
 
-	public AsyncService(){
-		excutor=new AsyncExecutor();
-	}
-	
-	@PostConstruct
-	public void init() throws Exception {
-		excutor.init();
-	}
-	
-	@PreDestroy
-	public void cleanUp() throws Exception {
-		excutor.cleanUp();
-	}
-	
-	public <T> Future<T> submitAsync(Callable<T> call){
+    public AsyncService() {
+        excutor = new AsyncExecutor();
+    }
 
-		return excutor.submitAsync(call);
-	}
+    @PostConstruct
+    public void init() throws Exception {
+        excutor.init();
+    }
 
+    @PreDestroy
+    public void cleanUp() throws Exception {
+        excutor.cleanUp();
+    }
 
-	public <T,K> List<T> processAsyncList(List<K> datas,AsyncTask<K,T> call){
+    public <T> Future<T> submitAsync(Callable<T> call) {
 
-		return excutor.processAsyncList(datas,call);
-	}
+        return excutor.submitAsync(call);
+    }
 
-	public <K,T> List<T> processAsyncMergeList(List<K> datas,AsyncTask<K,List<T>> call){
+    public <T, K> List<T> processAsyncList(List<K> datas, AsyncTask<K, T> call) {
 
-		return excutor.processAsyncMergeList(datas,call);
-	}
+        return excutor.processAsyncList(datas, call);
+    }
 
-	@Override public void submitAsync(Runnable run) {
-		excutor.submitAsync(run);
-	}
+    public <K, T> List<T> processAsyncMergeList(List<K> datas, AsyncTask<K, List<T>> call) {
+
+        return excutor.processAsyncMergeList(datas, call);
+    }
+
+    @Override public void submitAsync(Runnable run) {
+        excutor.submitAsync(run);
+    }
 }

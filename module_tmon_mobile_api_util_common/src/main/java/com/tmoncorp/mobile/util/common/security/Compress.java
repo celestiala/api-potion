@@ -8,26 +8,26 @@ import java.io.IOException;
 import java.util.zip.GZIPOutputStream;
 
 public class Compress {
-	private static final Logger LOG = LoggerFactory.getLogger(Compress.class);
+    private static final Logger LOG = LoggerFactory.getLogger(Compress.class);
 
-	private Compress() {
-		throw new AssertionError("static utility class");
-	}
+    private Compress() {
+        throw new AssertionError("static utility class");
+    }
 
-	public static byte[] toGzipByte(String data) {
-		ByteArrayOutputStream bos = new ByteArrayOutputStream(data.length());
+    public static byte[] toGzipByte(String data) {
+        ByteArrayOutputStream bos = new ByteArrayOutputStream(data.length());
 
-		try {
-			GZIPOutputStream gzip = new GZIPOutputStream(bos);
-			gzip.write(data.getBytes());
-			gzip.close();
-			byte[] compressed = bos.toByteArray();
-			bos.close();
-			return compressed;
+        try {
+            GZIPOutputStream gzip = new GZIPOutputStream(bos);
+            gzip.write(data.getBytes());
+            gzip.close();
+            byte[] compressed = bos.toByteArray();
+            bos.close();
+            return compressed;
 
-		} catch (IOException e) {
-			LOG.error("GZip compress failed : {}", e.getMessage());
-		}
-		return null;
-	}
+        } catch (IOException e) {
+            LOG.error("GZip compress failed : {}", e.getMessage());
+        }
+        return null;
+    }
 }

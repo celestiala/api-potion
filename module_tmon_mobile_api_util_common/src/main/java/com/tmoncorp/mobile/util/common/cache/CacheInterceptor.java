@@ -10,24 +10,24 @@ import java.util.Map;
 
 public class CacheInterceptor implements MethodInterceptor {
 
-	private static final Logger LOG = LoggerFactory.getLogger(CacheInterceptor.class);
+    private static final Logger LOG = LoggerFactory.getLogger(CacheInterceptor.class);
 
-	protected final Map<CacheStorage, CacheService> cacheStorageServiceMap;
+    protected final Map<CacheStorage, CacheService> cacheStorageServiceMap;
 
-	public CacheInterceptor(Map<CacheStorage, CacheService> cacheStorageCacheServiceMap) {
-		cacheStorageServiceMap = cacheStorageCacheServiceMap;
-	}
+    public CacheInterceptor(Map<CacheStorage, CacheService> cacheStorageCacheServiceMap) {
+        cacheStorageServiceMap = cacheStorageCacheServiceMap;
+    }
 
-	@Override
-	public Object invoke(MethodInvocation mi) throws Throwable {
+    @Override
+    public Object invoke(MethodInvocation mi) throws Throwable {
 
-		Method method = mi.getMethod();
-		Cache cacheInfo = method.getAnnotation(Cache.class);
-		CacheService service = cacheStorageServiceMap.get(cacheInfo.storage());
+        Method method = mi.getMethod();
+        Cache cacheInfo = method.getAnnotation(Cache.class);
+        CacheService service = cacheStorageServiceMap.get(cacheInfo.storage());
 
-		LOG.debug("cacheInfo storage : {}", cacheInfo.storage());
-		return service.get(cacheInfo, mi);
+        LOG.debug("cacheInfo storage : {}", cacheInfo.storage());
+        return service.get(cacheInfo, mi);
 
-	}
+    }
 
 }

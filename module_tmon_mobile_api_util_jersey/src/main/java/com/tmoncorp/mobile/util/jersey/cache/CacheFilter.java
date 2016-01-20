@@ -1,8 +1,8 @@
 package com.tmoncorp.mobile.util.jersey.cache;
 
+import com.tmoncorp.mobile.util.common.cache.Cache;
 import com.tmoncorp.mobile.util.common.cache.httpcache.HttpCacheConstant;
 import com.tmoncorp.mobile.util.common.cache.httpcache.HttpCacheType;
-import com.tmoncorp.mobile.util.common.cache.Cache;
 
 import javax.inject.Inject;
 import javax.ws.rs.container.*;
@@ -16,50 +16,50 @@ import java.io.IOException;
 @Provider
 public class CacheFilter implements ContainerRequestFilter, ContainerResponseFilter {
 
-	@Context
-	private ResourceInfo resourceInfo;
+    @Context
+    private ResourceInfo resourceInfo;
 
-	@Inject
-	private JerseyMemCacheRepository cacheRepo;
+    @Inject
+    private JerseyMemCacheRepository cacheRepo;
 
-	private boolean hasNotEtag(){
-		Cache cache=resourceInfo.getResourceMethod().getAnnotation(Cache.class);
-		return cache == null || cache.browserCache() != HttpCacheType.ETAG;
-	}
-	private boolean isNotModified(ContainerRequestContext requestContext){
-		String etag=requestContext.getHeaderString(HttpHeaders.IF_NONE_MATCH);
-		if (cacheRepo.getRaw(etag) != null)
-			return true;
-		return false;
-	}
+    private boolean hasNotEtag() {
+        Cache cache = resourceInfo.getResourceMethod().getAnnotation(Cache.class);
+        return cache == null || cache.browserCache() != HttpCacheType.ETAG;
+    }
 
-	@Override public void filter(ContainerRequestContext requestContext) throws IOException {
-		if (hasNotEtag())
-			return;
-		if (isNotModified(requestContext))
-			requestContext.abortWith(Response.status(Response.Status.NOT_MODIFIED).build());
+    private boolean isNotModified(ContainerRequestContext requestContext) {
+        String etag = requestContext.getHeaderString(HttpHeaders.IF_NONE_MATCH);
+        if (cacheRepo.getRaw(etag) != null)
+            return true;
+        return false;
+    }
 
-	}
+    @Override public void filter(ContainerRequestContext requestContext) throws IOException {
+        if (hasNotEtag())
+            return;
+        if (isNotModified(requestContext))
+            requestContext.abortWith(Response.status(Response.Status.NOT_MODIFIED).build());
 
+    }
 
-	@Override public void filter(ContainerRequestContext requestContext, ContainerResponseContext responseContext) throws IOException {
+    @Override public void filter(ContainerRequestContext requestContext, ContainerResponseContext responseContext) throws IOException {
 
-		MultivaluedMap<String,Object> responseHeaders=responseContext.getHeaders();
+        MultivaluedMap<String, Object> responseHeaders = responseContext.getHeaders();
 
-		Cache cache=resourceInfo.getResourceMethod().getAnnotation(Cache.class);
-		if (cache == null)
-			return;
+        Cache cache = resourceInfo.getResourceMethod().getAnnotation(Cache.class);
+        if (cache == null)
+            return;
 
-		String expireTime= (String)requestContext.getProperty(HttpCacheConstant.EXPIRE);
-		if (expireTime !=null && !expireTime.isEmpty())
-			responseHeaders.add(HttpHeaders.EXPIRES,expireTime);
+        String expireTime = (String) requestContext.getProperty(HttpCacheConstant.EXPIRE);
+        if (expireTime != null && !expireTime.isEmpty())
+            responseHeaders.add(HttpHeaders.EXPIRES, expireTime);
 
-		if (cache.compress())
-			responseHeaders.add(HttpHeaders.CONTENT_ENCODING,"gzip");
+        if (cache.compress())
+            responseHeaders.add(HttpHeaders.CONTENT_ENCODING, "gzip");
 
-		if (cache.browserCache() != HttpCacheType.ETAG)
-			return;
-		responseHeaders.add(HttpHeaders.ETAG,requestContext.getProperty(HttpCacheConstant.ETAG));
-	}
+        if (cache.browserCache() != HttpCacheType.ETAG)
+            return;
+        responseHeaders.add(HttpHeaders.ETAG, requestContext.getProperty(HttpCacheConstant.ETAG));
+    }
 }
 

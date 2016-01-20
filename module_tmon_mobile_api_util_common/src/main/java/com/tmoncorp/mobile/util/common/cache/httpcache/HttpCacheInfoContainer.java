@@ -2,7 +2,7 @@ package com.tmoncorp.mobile.util.common.cache.httpcache;
 
 public interface HttpCacheInfoContainer {
 
-	HttpCacheSupport getHttpCache();
+    HttpCacheSupport getHttpCache();
 
-	void setHttpCache(HttpCacheSupport cache);
+    void setHttpCache(HttpCacheSupport cache);
 }

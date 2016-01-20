@@ -12,14 +12,15 @@ import javax.ws.rs.core.MediaType;
 @Path("/v1/cache")
 public class CacheResource {
 
-	@Inject
-	private JerseyMemCacheRepository cacheRepo;
-	@GET
-	@Path("/mode/{mode}")
-	@Produces(MediaType.APPLICATION_JSON)
-	public String martDeal(@PathParam("mode") CacheMode mode) {
+    @Inject
+    private JerseyMemCacheRepository cacheRepo;
 
-		cacheRepo.setMode(mode);
-		return "{\"mode\":\""+mode+"\"}";
-	}
+    @GET
+    @Path("/mode/{mode}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public String martDeal(@PathParam("mode") CacheMode mode) {
+
+        cacheRepo.setMode(mode);
+        return "{\"mode\":\"" + mode + "\"}";
+    }
 }

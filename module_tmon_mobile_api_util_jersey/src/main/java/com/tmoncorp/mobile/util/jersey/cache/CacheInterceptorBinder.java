@@ -7,10 +7,10 @@ import javax.inject.Singleton;
 
 public class CacheInterceptorBinder extends AbstractBinder {
 
-	@Override
-	protected void configure() {
-		bind(CacheInterceptorService.class).to(InterceptionService.class).in(Singleton.class);
+    @Override
+    protected void configure() {
+        bind(CacheInterceptorService.class).to(InterceptionService.class).in(Singleton.class);
 
-	}
+    }
 
 }

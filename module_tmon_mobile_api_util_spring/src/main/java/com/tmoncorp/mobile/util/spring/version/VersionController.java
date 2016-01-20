@@ -13,19 +13,19 @@ import org.springframework.web.bind.annotation.ResponseBody;
 @RequestMapping("/version")
 public class VersionController {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(VersionController.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(VersionController.class);
 
-	@Autowired
-	private ManifestService manifestService;
+    @Autowired
+    private ManifestService manifestService;
 
-	@RequestMapping(method = { RequestMethod.GET }, value = { "/buildInfo" })
-	@ResponseBody
-	public BuildInfo getBuildInfo(){
-		try {
-			return manifestService.getBuildInfo();
-		}catch(Exception e){
-			LOGGER.error("getBuildInfo failed, {}",e.getMessage());
-			return null;
-		}
-	}
+    @RequestMapping(method = { RequestMethod.GET }, value = { "/buildInfo" })
+    @ResponseBody
+    public BuildInfo getBuildInfo() {
+        try {
+            return manifestService.getBuildInfo();
+        } catch (Exception e) {
+            LOGGER.error("getBuildInfo failed, {}", e.getMessage());
+            return null;
+        }
+    }
 }

@@ -2,13 +2,13 @@ package com.tmoncorp.mobile.util.common.cache;
 
 public class EmptyCache {
 
-	private static EmptyCache instance = new EmptyCache();
+    private static EmptyCache instance = new EmptyCache();
 
-	private EmptyCache() {
+    private EmptyCache() {
 
-	}
+    }
 
-	public static EmptyCache getInstance() {
-		return instance;
-	}
+    public static EmptyCache getInstance() {
+        return instance;
+    }
 }
