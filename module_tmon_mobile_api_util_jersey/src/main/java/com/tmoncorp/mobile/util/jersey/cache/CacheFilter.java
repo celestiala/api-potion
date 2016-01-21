@@ -44,6 +44,9 @@ public class CacheFilter implements ContainerRequestFilter, ContainerResponseFil
 
     @Override public void filter(ContainerRequestContext requestContext, ContainerResponseContext responseContext) throws IOException {
 
+        if (resourceInfo == null)
+            return;
+
         MultivaluedMap<String, Object> responseHeaders = responseContext.getHeaders();
 
         Cache cache = resourceInfo.getResourceMethod().getAnnotation(Cache.class);
