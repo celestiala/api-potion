@@ -44,14 +44,13 @@ public class CacheFilter implements ContainerRequestFilter, ContainerResponseFil
 
     @Override public void filter(ContainerRequestContext requestContext, ContainerResponseContext responseContext) throws IOException {
 
-        if (resourceInfo == null)
+        if (resourceInfo == null||resourceInfo.getResourceMethod() == null)
             return;
-
-        MultivaluedMap<String, Object> responseHeaders = responseContext.getHeaders();
 
         Cache cache = resourceInfo.getResourceMethod().getAnnotation(Cache.class);
         if (cache == null)
             return;
+        MultivaluedMap<String, Object> responseHeaders = responseContext.getHeaders();
 
         String expireTime = (String) requestContext.getProperty(HttpCacheConstant.EXPIRE);
         if (expireTime != null && !expireTime.isEmpty())
