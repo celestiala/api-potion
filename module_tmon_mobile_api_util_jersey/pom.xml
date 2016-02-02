@@ -78,7 +78,7 @@
         <dependency>
             <groupId>net.spy</groupId>
             <artifactId>spymemcached</artifactId>
-            <version>2.11.5</version>
+            <version>2.12.0</version>
         </dependency>
         <dependency>
             <groupId>com.owlike</groupId>
@@ -104,7 +104,7 @@
         </dependency>
     </dependencies>
     <properties>
-        <jersey.version>2.17</jersey.version>
+        <jersey.version>2.22.1</jersey.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
     </properties>

@@ -59,9 +59,17 @@ public class CacheService implements CacheProvider, HttpCacheInfoContainer {
 
         StringBuilder cp = new StringBuilder();
         appendEnvName(cp, cacheInfo);
+
+//        Parameter[] params=invo.getMethod().getParameters();
+//
+//        int i=0;
         for (Object param : invo.getArguments()) {
-            cp.append(KEY_SEPERATOR);
-            cp.append(param);
+//            CacheParam cacheParam=params[i].getAnnotation(CacheParam.class);
+//            if (cacheParam == null || !cacheParam.ignore()) {
+                cp.append(KEY_SEPERATOR);
+                cp.append(param);
+//            }
+//            ++i;
         }
         if (cp.length() < LONG_KEY)
             cb.append(cp);
@@ -198,15 +206,13 @@ public class CacheService implements CacheProvider, HttpCacheInfoContainer {
     }
 
     protected void makeAsyncCache(final String keyName, final Cache cacheinfo, MethodInvocation mi) {
-        Runnable cacheRequest = () -> {
+        asyncWorker.submitAsync(()->{
             try {
                 makeExpiredCache(keyName, cacheinfo, mi);
             } catch (Exception e) {
                 LOG.warn("Cache set exception {}", e);
             }
-        };
-
-        asyncWorker.submitAsync(cacheRequest);
+        });
     }
 
     protected boolean isExpiredCache(CacheItem item) {

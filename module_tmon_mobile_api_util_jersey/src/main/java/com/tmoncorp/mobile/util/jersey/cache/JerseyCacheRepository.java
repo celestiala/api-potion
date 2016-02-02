@@ -7,7 +7,7 @@ import com.tmoncorp.mobile.util.jersey.async.AsyncRunner;
 public class JerseyCacheRepository extends CacheService {
 
     public JerseyCacheRepository(CacheRepository repository) {
-        super(repository, (run) -> AsyncRunner.getInstance().submitAsync(run));
+        super(repository, (run) -> CacheAsyncRunner.getInstance().submitAsync(run));
     }
 
 }

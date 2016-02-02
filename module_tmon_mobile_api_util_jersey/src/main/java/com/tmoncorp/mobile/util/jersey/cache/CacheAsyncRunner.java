@@ -1,4 +1,4 @@
-package com.tmoncorp.mobile.util.jersey.async;
+package com.tmoncorp.mobile.util.jersey.cache;
 
 import com.tmoncorp.mobile.util.common.async.AsyncExecutor;
 import com.tmoncorp.mobile.util.common.async.AsyncTask;
@@ -14,34 +14,24 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.Future;
 
 @Singleton
-public class AsyncRunner implements ContainerLifecycleListener {
+public class CacheAsyncRunner implements ContainerLifecycleListener, AsyncWorker {
 
-    private static final Logger LOG = LoggerFactory.getLogger(AsyncRunner.class);
-    private static AsyncRunner instance;
+    private static final Logger LOG = LoggerFactory.getLogger(CacheAsyncRunner.class);
+    private static CacheAsyncRunner instance;
     private final AsyncExecutor excutor;
 
-    public AsyncRunner() {
+    public CacheAsyncRunner() {
         excutor = new AsyncExecutor();
         instance = this;
     }
 
-    public static AsyncRunner getInstance() {
+    public static CacheAsyncRunner getInstance() {
         return instance;
     }
 
-    public <T> Future<T> submitAsync(Callable<T> call) {
-
-        return excutor.submitAsync(call);
-    }
-
-    public <T, K> List<T> processAsyncList(List<K> datas, AsyncTask<K, T> call) {
-
-        return excutor.processAsyncList(datas, call);
-    }
-
-    public <K, T> List<T> processAsyncMergeList(List<K> datas, AsyncTask<K, List<T>> call) {
-
-        return excutor.processAsyncMergeList(datas, call);
+    @Override
+    public void submitAsync(Runnable run) {
+        excutor.submitAsync(run);
     }
 
     @Override
