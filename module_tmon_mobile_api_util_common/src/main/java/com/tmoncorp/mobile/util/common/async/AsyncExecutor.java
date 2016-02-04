@@ -23,7 +23,7 @@ public class AsyncExecutor {
     private ThreadPoolTaskExecutor pool;
 
     public void init() throws Exception {
-        int maxPoolSize = Runtime.getRuntime().availableProcessors() * 2;
+        int maxPoolSize = Runtime.getRuntime().availableProcessors();
         int corePoolSize = 0;
         if (maxPoolSize < 1) {
             maxPoolSize = THREAD_POOL_MAX_SIZE;
