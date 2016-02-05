@@ -69,6 +69,11 @@
             <artifactId>spymemcached</artifactId>
             <version>2.11.5</version>
         </dependency>
+        <dependency>
+            <groupId>org.glassfish.jersey.core</groupId>
+            <artifactId>jersey-server</artifactId>
+            <version>2.22.1</version>
+        </dependency>
     </dependencies>
     <parent>
         <groupId>com.tmoncorp</groupId>

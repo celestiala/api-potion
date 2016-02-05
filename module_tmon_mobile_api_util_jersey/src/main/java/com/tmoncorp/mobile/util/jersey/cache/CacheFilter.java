@@ -56,9 +56,6 @@ public class CacheFilter implements ContainerRequestFilter, ContainerResponseFil
         if (expireTime != null && !expireTime.isEmpty())
             responseHeaders.add(HttpHeaders.EXPIRES, expireTime);
 
-        if (cache.compress())
-            responseHeaders.add(HttpHeaders.CONTENT_ENCODING, "gzip");
-
         if (cache.browserCache() != HttpCacheType.ETAG)
             return;
         responseHeaders.add(HttpHeaders.ETAG, requestContext.getProperty(HttpCacheConstant.ETAG));

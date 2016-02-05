@@ -10,7 +10,9 @@ import org.aopalliance.intercept.MethodInvocation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.ws.rs.core.Response;
 import java.lang.reflect.Method;
+import java.lang.reflect.Parameter;
 import java.time.LocalDateTime;
 
 public class CacheService implements CacheProvider, HttpCacheInfoContainer {
@@ -60,16 +62,16 @@ public class CacheService implements CacheProvider, HttpCacheInfoContainer {
         StringBuilder cp = new StringBuilder();
         appendEnvName(cp, cacheInfo);
 
-//        Parameter[] params=invo.getMethod().getParameters();
-//
-//        int i=0;
+        Parameter[] params=invo.getMethod().getParameters();
+
+        int i=0;
         for (Object param : invo.getArguments()) {
-//            CacheParam cacheParam=params[i].getAnnotation(CacheParam.class);
-//            if (cacheParam == null || !cacheParam.ignore()) {
+            CacheParam cacheParam=params[i].getAnnotation(CacheParam.class);
+            if (cacheParam == null || !cacheParam.ignore()) {
                 cp.append(KEY_SEPERATOR);
                 cp.append(param);
-//            }
-//            ++i;
+            }
+            ++i;
         }
         if (cp.length() < LONG_KEY)
             cb.append(cp);
@@ -189,7 +191,7 @@ public class CacheService implements CacheProvider, HttpCacheInfoContainer {
         Object result = null;
         try {
             if (cacheInfo.compress())
-                result = Compress.toGzipByte((String) mi.proceed());
+                result = compress(mi.proceed());
             else
                 result = mi.proceed();
         } catch (Exception e) {
@@ -229,6 +231,10 @@ public class CacheService implements CacheProvider, HttpCacheInfoContainer {
 
         isHttpCacheSupport = (cacheSupport != null);
         httpCacheSupport = cacheSupport;
+    }
+
+    public Object compress(Object rawData) throws Throwable{
+        return Compress.toGzipByte(((String)rawData).getBytes());
     }
 
 }

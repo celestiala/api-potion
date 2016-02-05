@@ -7,6 +7,9 @@ import org.aopalliance.intercept.MethodInvocation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.ws.rs.core.HttpHeaders;
+import javax.ws.rs.core.Response;
+import java.lang.reflect.Method;
 import java.util.EnumMap;
 
 public class JerseyCacheInterceptor extends CacheInterceptor {
@@ -48,12 +51,21 @@ public class JerseyCacheInterceptor extends CacheInterceptor {
     @Override
     public Object invoke(MethodInvocation mi) throws Throwable {
 
-        LOG.debug("method invoked : {}", mi.getMethod());
         JerseyMemCacheRepository cacheRepo = ciService.getCacheRepo();
         if (cacheRepo == null || cacheRepo.getMode() == CacheMode.OFF)
             return mi.proceed();
-        LOG.debug("cache mode on");
-        return super.invoke(mi);
+
+        Object result=super.invoke(mi);
+        Method method = mi.getMethod();
+        Cache cacheInfo = method.getAnnotation(Cache.class);
+        if (cacheInfo.compress() && result != null){
+            Response.ResponseBuilder builder=Response.ok();
+            builder.header(HttpHeaders.CONTENT_ENCODING,"gzip");
+            builder.entity(result);
+            return builder.build();
+        }
+
+        return result;
     }
 
 }

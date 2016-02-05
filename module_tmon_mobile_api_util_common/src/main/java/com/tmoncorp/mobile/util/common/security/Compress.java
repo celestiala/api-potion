@@ -14,12 +14,12 @@ public class Compress {
         throw new AssertionError("static utility class");
     }
 
-    public static byte[] toGzipByte(String data) {
-        ByteArrayOutputStream bos = new ByteArrayOutputStream(data.length());
+    public static byte[] toGzipByte(byte[] data) {
+        ByteArrayOutputStream bos = new ByteArrayOutputStream(data.length);
 
         try {
             GZIPOutputStream gzip = new GZIPOutputStream(bos);
-            gzip.write(data.getBytes());
+            gzip.write(data);
             gzip.close();
             byte[] compressed = bos.toByteArray();
             bos.close();
