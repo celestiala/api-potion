@@ -18,7 +18,7 @@ public class AsyncExecutor {
 
     private static final int THREAD_POOL_MIN_CORE_SIZE = 4;
     private static final int THREAD_POOL_MAX_SIZE = 24;
-    private static final int TASK_TIMEOUT = 240 * 1000; //ms
+    private static final int TASK_TIMEOUT = 10 * 1000; //ms
     private static final int TASK_DELAY = 50;
     private ThreadPoolTaskExecutor pool;
 
@@ -75,37 +75,46 @@ public class AsyncExecutor {
         return futureList;
     }
 
+    private <A> void cancelJobs(LinkedList<Future<A>> futureList){
+        futureList.stream().forEach(f->f.cancel(true));
+    }
+
     private <T, A> List<T> getSortedList(LinkedList<Future<A>> futureList, AsyncListAdder<T, A> itemAdder) {
         LinkedList<T> list = new LinkedList<>();
-        int tasktime = 0;
+        long startTime = System.currentTimeMillis();
         while (!futureList.isEmpty()) {
-
-            Future<A> m = futureList.getFirst();
-            if (m.isDone()) {
-                try {
-                    A item = m.get();
-                    if (item != null)
-                        itemAdder.add(list, item);
-                } catch (InterruptedException e) {
-                    LOG.debug("Async Task interrupted {} ", e);
-                    break;
-                } catch (ExecutionException | RuntimeException e) {
-                    LOG.debug("Async Task exception {} ", e);
-                    continue;
-                }
-                futureList.remove(m);
-
-            } else {
-                if (TASK_TIMEOUT < tasktime)
-                    break;
-                try {
-                    tasktime += TASK_DELAY;
-                    Thread.sleep(TASK_DELAY);
-                } catch (InterruptedException e) {
-                    LOG.debug("Async Task loop interrupted {} ", e);
+                if (startTime + TASK_TIMEOUT < System.currentTimeMillis()) {
+                    LOG.debug("timeout");
+                    cancelJobs(futureList);
                     break;
                 }
-            }
+
+                Future<A> m = futureList.getFirst();
+                if (m.isDone()) {
+                    try {
+                        A item = m.get();
+                        if (item != null)
+                            itemAdder.add(list, item);
+                    } catch (InterruptedException e) {
+                        cancelJobs(futureList);
+                        LOG.debug("Async Task interrupted {} ", e);
+                        break;
+                    } catch (ExecutionException | RuntimeException e) {
+                        LOG.debug("Async Task exception {} ", e);
+                        continue;
+                    }
+                    futureList.remove(m);
+
+                } else {
+                    try {
+                        Thread.sleep(TASK_DELAY);
+                    } catch (InterruptedException e) {
+                        cancelJobs(futureList);
+                        LOG.debug("Async Task loop interrupted {} ", e);
+                        break;
+                    }
+                }
+
         }
         return list;
     }
