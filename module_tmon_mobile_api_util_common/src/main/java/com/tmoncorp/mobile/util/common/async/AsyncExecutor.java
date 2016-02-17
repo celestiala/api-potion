@@ -19,7 +19,7 @@ public class AsyncExecutor {
     private static final int THREAD_POOL_MIN_CORE_SIZE = 4;
     private static final int THREAD_POOL_MAX_SIZE = 24;
     private static final int TASK_TIMEOUT = 10 * 1000; //ms
-    private static final int TASK_DELAY = 50;
+    private static final int TASK_DELAY = 10;
     private ThreadPoolTaskExecutor pool;
 
     public void init() throws Exception {
