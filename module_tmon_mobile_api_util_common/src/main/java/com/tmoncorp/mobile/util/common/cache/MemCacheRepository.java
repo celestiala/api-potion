@@ -1,12 +1,8 @@
 package com.tmoncorp.mobile.util.common.cache;
 
-import net.spy.memcached.AddrUtil;
-import net.spy.memcached.BinaryConnectionFactory;
 import net.spy.memcached.MemcachedClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.io.IOException;
 
 public class MemCacheRepository implements CacheRepository {
     private static final Logger LOG = LoggerFactory.getLogger(MemCacheRepository.class);
@@ -20,12 +16,7 @@ public class MemCacheRepository implements CacheRepository {
     public MemCacheRepository(String memcacheUrl, String environment, String serverCacheKey) {
         this.environment = environment;
         this.serverCacheKey = serverCacheKey;
-        try {
-            client = new MemcachedClient(new BinaryConnectionFactory(), AddrUtil.getAddresses(memcacheUrl));
-        } catch (IOException e) {
-            LOG.error("{}", e);
-        }
-
+        client=MemcachedClientFactory.getClient(memcacheUrl);
     }
 
     public void remove(String key) {
