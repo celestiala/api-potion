@@ -18,7 +18,7 @@ public class AsyncExecutor {
 
     private static final int THREAD_POOL_MIN_CORE_SIZE = 4;
     private static final int THREAD_POOL_MAX_SIZE = 24;
-    private static final int TASK_TIMEOUT = 60 * 1000; //ms
+    private static final int TASK_TIMEOUT = 10 * 1000; //ms
     private static final int TASK_DELAY = 10;
     private ThreadPoolTaskExecutor pool;
 
@@ -79,11 +79,11 @@ public class AsyncExecutor {
         futureList.stream().forEach(f->f.cancel(true));
     }
 
-    private <T, A> List<T> getSortedList(LinkedList<Future<A>> futureList, AsyncListAdder<T, A> itemAdder) {
+    private <T, A> List<T> getSortedList(LinkedList<Future<A>> futureList, AsyncListAdder<T, A> itemAdder,int timeout) {
         LinkedList<T> list = new LinkedList<>();
         long startTime = System.currentTimeMillis();
         while (!futureList.isEmpty()) {
-                if (startTime + TASK_TIMEOUT < System.currentTimeMillis()) {
+                if (startTime + timeout < System.currentTimeMillis()) {
                     LOG.debug("timeout");
                     cancelJobs(futureList);
                     break;
@@ -121,14 +121,22 @@ public class AsyncExecutor {
 
     public <T, K> List<T> processAsyncList(List<K> datas, AsyncTask<K, T> call) {
 
-        LinkedList<Future<T>> futureList = requestAsyncList(datas, call);
-        return getSortedList(futureList, (list, item) -> list.add(item));
+        return processAsyncList(datas,call,TASK_TIMEOUT);
     }
 
+    public <T, K> List<T> processAsyncList(List<K> datas, AsyncTask<K, T> call, int timeout) {
+
+        LinkedList<Future<T>> futureList = requestAsyncList(datas, call);
+        return getSortedList(futureList, (list, item) -> list.add(item),timeout);
+    }
     public <K, T> List<T> processAsyncMergeList(List<K> datas, AsyncTask<K, List<T>> call) {
+        return processAsyncMergeList(datas,call,TASK_TIMEOUT);
+    }
+
+    public <K, T> List<T> processAsyncMergeList(List<K> datas, AsyncTask<K, List<T>> call, int timeout) {
 
         LinkedList<Future<List<T>>> futureList = requestAsyncList(datas, call);
-        return getSortedList(futureList, (list, item) -> list.addAll(item));
+        return getSortedList(futureList, (list, item) -> list.addAll(item),timeout);
     }
 
     interface AsyncListAdder<T, A> {

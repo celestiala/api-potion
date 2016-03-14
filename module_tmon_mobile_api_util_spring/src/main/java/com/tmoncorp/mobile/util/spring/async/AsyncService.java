@@ -40,9 +40,19 @@ public class AsyncService implements AsyncWorker {
         return excutor.processAsyncList(datas, call);
     }
 
+    public <T, K> List<T> processAsyncList(List<K> datas, AsyncTask<K, T> call,int timeout) {
+
+        return excutor.processAsyncList(datas, call, timeout);
+    }
+
     public <K, T> List<T> processAsyncMergeList(List<K> datas, AsyncTask<K, List<T>> call) {
 
         return excutor.processAsyncMergeList(datas, call);
+    }
+
+    public <K, T> List<T> processAsyncMergeList(List<K> datas, AsyncTask<K, List<T>> call,int timeout) {
+
+        return excutor.processAsyncMergeList(datas, call,timeout);
     }
 
     @Override public void submitAsync(Runnable run) {
