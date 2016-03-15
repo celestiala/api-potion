@@ -27,7 +27,7 @@ public class MemCacheRepository implements CacheRepository {
         try {
             client.set(makeRawKey(keyName), expire, value);
         } catch (Exception e) {
-            LOG.error("ERROR on set a cache {}", e.getMessage());
+            LOG.error("ERROR on set a cache {}", e);
         }
     }
 
