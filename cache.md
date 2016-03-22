@@ -1,6 +1,10 @@
 # Cache
 @Cache를 붙이면 된다. 
 
+    @Retention(RetentionPolicy.RUNTIME)
+    @Target(ElementType.METHOD)
+    @Inherited
+    @Documented
     public @interface Cache {
     
        int DEFAULT_EXPIRETIME = 5 * 60; //seconds
@@ -20,6 +24,15 @@
        String name() default ""; // 메서드명과 클래스명을 조합해 자동으로 생성하는 캐시 이름 대신에 유저가 지정한 캐시 이름을 사용한다. 단, 전달된 파라미터는 자동으로 만든다. 
     
        HttpCacheType browserCache() default HttpCacheType.EXPIRE_TIME; // 브라우저 캐시헤더 종류 설정 
+    }
+    
+    @Retention(RetentionPolicy.RUNTIME)
+    @Target(ElementType.PARAMETER)
+    @Inherited
+    @Documented
+    public @interface CacheParam {
+        boolean ignore() default false;    // 전달되는 파라미터를 캐시키로 사용하지 않을지 설정한다
+                                           // 예: method(String a, @CacheParam(ignore=true) String b) b값이 어떤 값이 전달되든 a값이 같을때는 같은 캐시 값을 전달
     }
     
     public enum CacheType {
@@ -43,7 +56,7 @@
     <dependency>
      <groupId>com.tmoncorp</groupId>
      <artifactId>module_tmon_mobile_api_util_spring</artifactId>
-     <version>0.1.7-SNAPSHOT</version>
+     <version>0.1.9-SNAPSHOT</version>
     </dependency>
 
 ### Cache On/Off
