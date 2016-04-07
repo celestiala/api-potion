@@ -67,11 +67,11 @@ public class SecurityUtils {
     }
 
     public static String encryptAES(String input, byte[] key) {
-        return Base64.getEncoder().encodeToString(encryptAES(input.getBytes(), key));
+        return Base64.getUrlEncoder().encodeToString(encryptAES(input.getBytes(), key));
     }
 
     public static String decryptAES(String input, byte[] key) {
-        byte[] inputRaw = Base64.getDecoder().decode(input);
+        byte[] inputRaw = Base64.getUrlDecoder().decode(input);
         return new String(decryptAES(inputRaw, key));
     }
 
