@@ -29,7 +29,9 @@ public class IdleConnectionMonitor implements Runnable {
 
         try {
             while (!isShudown) {
-                wait(THREAD_DEALY);
+                synchronized (this) {
+                    wait(THREAD_DEALY);
+                }
                 connectionManager.closeExpiredConnections();
                 connectionManager.closeIdleConnections(IDLE_TIME, TimeUnit.SECONDS);
             }
