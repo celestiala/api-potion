@@ -10,14 +10,14 @@ import org.springframework.http.converter.HttpMessageNotWritableException;
 import java.io.IOException;
 import java.util.List;
 
-public class ApiMessageConverter implements HttpMessageConverter<Object> {
+public class ApiMessageConverter<T> implements HttpMessageConverter<T> {
 
     private HttpMessageConverter<Object> converter;
+
 
     public ApiMessageConverter(HttpMessageConverter<Object> converter){
         this.converter=converter;
     }
-
 
     @Override public boolean canRead(Class<?> clazz, MediaType mediaType) {
         return converter.canRead(clazz,mediaType);
@@ -31,13 +31,13 @@ public class ApiMessageConverter implements HttpMessageConverter<Object> {
         return converter.getSupportedMediaTypes();
     }
 
-    @Override public Object read(Class<? extends Object> clazz, HttpInputMessage inputMessage) throws IOException, HttpMessageNotReadableException {
+    @Override public T read(Class<? extends T> clazz, HttpInputMessage inputMessage) throws IOException, HttpMessageNotReadableException {
 
-        ApiResponse apiResponse=(ApiResponse)converter.read(ApiResponse.class,inputMessage);
+        ApiResponse<T> apiResponse= (ApiResponse<T>) converter.read(new ApiResponse<T>().getClass(),inputMessage);
         return apiResponse.getData();
     }
 
-    @Override public void write(Object t, MediaType contentType, HttpOutputMessage outputMessage) throws IOException, HttpMessageNotWritableException {
+    @Override public void write(T t, MediaType contentType, HttpOutputMessage outputMessage) throws IOException, HttpMessageNotWritableException {
         converter.write(t,contentType,outputMessage);
     }
 }
