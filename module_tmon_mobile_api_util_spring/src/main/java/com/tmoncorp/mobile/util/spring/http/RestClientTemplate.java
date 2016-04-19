@@ -72,7 +72,7 @@ public class RestClientTemplate extends RestTemplate {
             messageConverters.add(new Jaxb2RootElementHttpMessageConverter());
         }
         if (jackson2Present) {
-            addWrapConverter(new MappingJackson2HttpMessageConverter(mapper));
+            addWrapConverter(new ApiMappingJackson2HttpMessageConverter(mapper));
         }
         else if (gsonPresent) {
             addWrapConverter(new GsonHttpMessageConverter());

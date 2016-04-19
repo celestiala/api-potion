@@ -20,16 +20,12 @@ public class ApiResponse<T> implements Serializable {
     private static final long serialVersionUID = -2790327574322809168L;
 
     T data;
-//  HttpStatus httpStatus;
 
     public ApiResponse(){
 
     }
 
     public ApiResponse(ApiResponse<?> res) {
-//        if(res != null) {
-//            this.setHttpStatus(res.getHttpStatus());
-//        }
 
         this.setData((T)res.getData());
     }
@@ -46,18 +42,6 @@ public class ApiResponse<T> implements Serializable {
     public void setData(T data) {
         this.data = data;
     }
-
-//    public HttpStatus getHttpStatus() {
-//        return this.httpStatus;
-//    }
-//
-//    public void setHttpStatus(HttpStatus httpStatus) {
-//        this.httpStatus = httpStatus;
-//    }
-//
-//    public int getHttpCode() {
-//        return this.httpStatus.value();
-//    }
 
     @Override
     public boolean equals(Object o) {
