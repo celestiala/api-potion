@@ -18,7 +18,7 @@ public class ApiMessageConverter<T> implements GenericHttpMessageConverter<T> {
 
     private GenericHttpMessageConverter<Object> converter;
 
-    private static Logger LOGGER = LoggerFactory.getLogger(ApiMessageConverter.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(ApiMessageConverter.class);
 
 
     public ApiMessageConverter(HttpMessageConverter<Object> converter){

@@ -48,7 +48,7 @@ public class SecurityUtils {
             MessageDigest md = MessageDigest.getInstance(algorithm);
             return md.digest(str);
         } catch (Exception e) {
-            LOG.warn("could not make hash string, {}", e.getMessage());
+            LOG.warn("could not make hash string, {}", e);
             return null;
         }
     }
@@ -61,7 +61,7 @@ public class SecurityUtils {
             cipher.init(mode, keySpec);
             return cipher.doFinal(input);
         } catch (Exception e) {
-            LOG.warn("AES Cipher Exception occurred, {}", e.getMessage());
+            LOG.warn("AES Cipher Exception occurred, {}", e);
             return null;
         }
     }

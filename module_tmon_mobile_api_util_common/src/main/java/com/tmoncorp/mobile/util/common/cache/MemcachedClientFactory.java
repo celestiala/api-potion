@@ -11,7 +11,7 @@ import java.io.IOException;
 public class MemcachedClientFactory {
 
     private static final Logger LOG = LoggerFactory.getLogger(MemcachedClientFactory.class);
-    private static final MemcachedClientFactory instance=new MemcachedClientFactory();
+    private static final MemcachedClientFactory INSTANCE =new MemcachedClientFactory();
     private MemcachedClient client;
 
     private MemcachedClientFactory(){
@@ -37,11 +37,11 @@ public class MemcachedClientFactory {
     }
 
     public static MemcachedClient getClient(String memcacheUrl){
-        return instance.getOrMakeClient(memcacheUrl);
+        return INSTANCE.getOrMakeClient(memcacheUrl);
     }
 
     public static MemcachedClient getClient(){
-        return instance.getInnerClient();
+        return INSTANCE.getInnerClient();
 
     }
 }

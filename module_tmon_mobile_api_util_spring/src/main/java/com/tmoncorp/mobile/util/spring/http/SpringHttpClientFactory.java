@@ -61,7 +61,7 @@ public class SpringHttpClientFactory {
         ArrayList<Header> headers=new ArrayList<>();
         addDefaultHeaders(headers);
 
-        builder.setDefaultMaxPerRoute(Integer.valueOf(defaultMaxPerRoute));
+        builder.setDefaultMaxPerRoute(Integer.parseInt(defaultMaxPerRoute));
         builder.setMaxTotal(Integer.valueOf(defaultMaxTotalClient));
         builder.setUserAgent("Mobile API 0.1");
         builder.setConnectTimeout(Integer.valueOf(defaultConnectionTimeout));

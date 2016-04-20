@@ -2,7 +2,6 @@ package com.tmoncorp.mobile.util.jersey.async;
 
 import com.tmoncorp.mobile.util.common.async.AsyncExecutor;
 import com.tmoncorp.mobile.util.common.async.AsyncTask;
-import com.tmoncorp.mobile.util.common.async.AsyncWorker;
 import org.glassfish.jersey.server.spi.Container;
 import org.glassfish.jersey.server.spi.ContainerLifecycleListener;
 import org.slf4j.Logger;

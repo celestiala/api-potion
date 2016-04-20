@@ -12,6 +12,7 @@ public class ApiMappingJackson2HttpMessageConverter extends MappingJackson2HttpM
         super(mapper);
     }
 
+    @Override
     protected JavaType getJavaType(Type type, Class<?> contextClass) {
         if (contextClass!=null){
             return this.objectMapper.getTypeFactory().constructParametricType(ApiResponse.class, contextClass);
