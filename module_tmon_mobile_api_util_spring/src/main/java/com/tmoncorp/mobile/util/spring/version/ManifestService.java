@@ -1,6 +1,8 @@
 package com.tmoncorp.mobile.util.spring.version;
 
 import com.tmoncorp.mobile.util.common.version.BuildInfo;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -13,6 +15,8 @@ import java.util.jar.Manifest;
 @Service
 public class ManifestService {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(ManifestService.class);
+
     @Autowired
     ServletContext context;
 
@@ -23,6 +27,7 @@ public class ManifestService {
         try {
             mf.read(resourceAsStream);
         } catch (IOException e) {
+            LOGGER.debug("",e);
             return null;
         }
 

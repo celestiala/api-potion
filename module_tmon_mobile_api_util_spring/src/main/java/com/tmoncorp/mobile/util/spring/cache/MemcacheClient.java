@@ -36,7 +36,7 @@ public class MemcacheClient implements CacheProvider, CacheRepository {
             memCacheRepository = new MemCacheRepository(memcacheUrls, buildEnv, cachePrefix);
             innerCacheService = new SpringCacheService(memCacheRepository, run -> ayncService.submitAsync(run));
         } catch (Exception e) {
-            LOGGER.error("memcache client initialize failed : {}", e.getMessage());
+            LOGGER.error("memcache client initialize failed : {}", e);
         }
     }
 

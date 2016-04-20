@@ -10,7 +10,7 @@ import java.util.Locale;
 
 public class MobileDateUtils {
 
-    private final static SimpleDateFormat FORMATTER = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss", Locale.KOREA);
+    private static final SimpleDateFormat FORMATTER = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss", Locale.KOREA);
 
     private MobileDateUtils() {
         throw new AssertionError("static utility class");

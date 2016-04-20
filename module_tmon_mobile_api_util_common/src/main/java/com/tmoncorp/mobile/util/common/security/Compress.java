@@ -26,7 +26,7 @@ public class Compress {
             return compressed;
 
         } catch (IOException e) {
-            LOG.error("GZip compress failed : {}", e.getMessage());
+            LOG.error("GZip compress failed : {}", e);
         }
         return null;
     }

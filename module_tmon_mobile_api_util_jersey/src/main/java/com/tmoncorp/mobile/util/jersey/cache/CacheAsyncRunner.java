@@ -1,7 +1,6 @@
 package com.tmoncorp.mobile.util.jersey.cache;
 
 import com.tmoncorp.mobile.util.common.async.AsyncExecutor;
-import com.tmoncorp.mobile.util.common.async.AsyncTask;
 import com.tmoncorp.mobile.util.common.async.AsyncWorker;
 import org.glassfish.jersey.server.spi.Container;
 import org.glassfish.jersey.server.spi.ContainerLifecycleListener;
@@ -9,9 +8,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.inject.Singleton;
-import java.util.List;
-import java.util.concurrent.Callable;
-import java.util.concurrent.Future;
 
 @Singleton
 public class CacheAsyncRunner implements ContainerLifecycleListener, AsyncWorker {

@@ -34,6 +34,7 @@ public class ClientInfo {
             try {
                 type = DeviceInfo.DeviceType.valueOf(extras[0].trim());
             } catch (IllegalArgumentException e) {
+                LOGGER.debug("",e);
                 return DeviceInfo.getDefaultInfo();
             }
 

@@ -2,9 +2,7 @@ package com.tmoncorp.mobile.init;
 
 import com.tmoncorp.mobile.repository.CacheTestRepository;
 import com.tmoncorp.mobile.util.jersey.async.AsyncRunner;
-import com.tmoncorp.mobile.util.jersey.cache.CacheInterceptorService;
 import com.tmoncorp.mobile.util.jersey.cache.JerseyMemCacheRepository;
-import org.glassfish.hk2.api.InterceptionService;
 import org.glassfish.hk2.utilities.binding.AbstractBinder;
 import org.glassfish.jersey.server.spi.ContainerLifecycleListener;
 

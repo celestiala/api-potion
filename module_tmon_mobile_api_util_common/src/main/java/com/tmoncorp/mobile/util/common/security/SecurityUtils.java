@@ -10,12 +10,12 @@ import java.util.Base64;
 
 public class SecurityUtils {
 
-    public final static String MD5 = "MD5";
-    public final static String SHA1 = "SHA-1";
+    public static final String MD5 = "MD5";
+    public static final String SHA1 = "SHA-1";
 
-    private final static String CHIPER_ALGORITHM = "AES";
-    private final static String CHIPER_NAME = "AES/ECB/PKCS5Padding";
-    private final static String CHAR_ENCODING = "UTF-8";
+    private static final String CHIPER_ALGORITHM = "AES";
+    private static final String CHIPER_NAME = "AES/ECB/PKCS5Padding";
+    private static final String CHAR_ENCODING = "UTF-8";
 
     private static final Logger LOG = LoggerFactory.getLogger(SecurityUtils.class);
 

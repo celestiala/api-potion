@@ -24,7 +24,7 @@ public class VersionController {
         try {
             return manifestService.getBuildInfo();
         } catch (Exception e) {
-            LOGGER.error("getBuildInfo failed, {}", e.getMessage());
+            LOGGER.error("getBuildInfo failed, {}", e);
             return null;
         }
     }
