@@ -6,7 +6,7 @@ import java.util.concurrent.TimeUnit;
 
 public class IdleConnectionMonitor implements Runnable {
 
-    private static final int THREAD_DEALY = 5 * 1000; //ms
+    private static final int THREAD_DEALY = 1 * 1000; //ms
     private static final int IDLE_TIME = 30; //seconds
 
     private volatile boolean isShudown=false;
