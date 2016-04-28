@@ -2,9 +2,12 @@ package com.tmoncorp.mobile.util.common.http;
 
 import org.apache.http.Header;
 import org.apache.http.HttpHost;
+import org.apache.http.client.HttpRequestRetryHandler;
 import org.apache.http.client.config.RequestConfig;
+import org.apache.http.config.ConnectionConfig;
 import org.apache.http.conn.routing.HttpRoute;
 import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.DefaultHttpRequestRetryHandler;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
 
@@ -17,6 +20,7 @@ public class HttpClientBuilder {
     private Collection<Header> defaultHeaders;
     private RequestConfig.Builder requestConfigBuilder=RequestConfig.custom();
     private String userAgent;
+    private HttpRequestRetryHandler retryHandler=new DefaultHttpRequestRetryHandler();
 
 
     public HttpClientBuilder(){
@@ -87,6 +91,7 @@ public class HttpClientBuilder {
                 .setUserAgent(userAgent)
                 .setConnectionManager(cm)
                 .setDefaultHeaders(defaultHeaders)
+                .setRetryHandler(retryHandler)
                 .build();
     }
 

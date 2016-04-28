@@ -5,6 +5,7 @@ import com.tmoncorp.mobile.util.common.clientinfo.HeaderNames;
 import com.tmoncorp.mobile.util.common.http.HttpClientBuilder;
 import com.tmoncorp.mobile.util.common.http.IdleConnectionMonitor;
 import org.apache.http.Header;
+import org.apache.http.HttpHeaders;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.message.BasicHeader;
 import org.slf4j.Logger;
@@ -55,6 +56,7 @@ public class SpringHttpClientFactory {
 
     protected void addDefaultHeaders(Collection<Header> headers){
         headers.add(new BasicHeader(HeaderNames.CLIENT_PLATFORM,ClientInfoProvider.getInfo().getPlatform().toString()));
+        headers.add(new BasicHeader(HttpHeaders.CONNECTION,"close"));
     }
 
     protected void configure(HttpClientBuilder builder){
