@@ -71,7 +71,13 @@ public class SecurityUtils {
     }
 
     public static String decryptAES(String input, byte[] key) {
-        byte[] inputRaw = Base64.getUrlDecoder().decode(input);
+        byte[] inputRaw;
+        try {
+            inputRaw = Base64.getUrlDecoder().decode(input);
+        }catch (IllegalArgumentException e){
+            LOG.debug("",e);
+            return null;
+        }
         return new String(decryptAES(inputRaw, key));
     }
 
