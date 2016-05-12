@@ -124,7 +124,6 @@ public class CacheService implements CacheProvider, HttpCacheInfoContainer {
             cache.setExpireTime(LocalDateTime.now().plusSeconds(cacheInfo.expiration()));
             cache.setValue(value);
 
-            setExpire(cache);
             cacheItem = cache;
         }
 
