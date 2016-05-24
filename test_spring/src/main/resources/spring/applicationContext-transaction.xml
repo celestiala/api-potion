@@ -12,7 +12,5 @@
 
     <tx:annotation-driven transaction-manager="transactionManager"
                           mode="proxy" proxy-target-class="true"/>
-    <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
-        <property name="dataSource" ref="ticketmonsterDataSource"/>
-    </bean>
+
 </beans>

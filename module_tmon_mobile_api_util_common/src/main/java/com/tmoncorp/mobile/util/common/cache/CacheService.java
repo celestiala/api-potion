@@ -6,6 +6,7 @@ import com.tmoncorp.mobile.util.common.cache.httpcache.HttpCacheSupport;
 import com.tmoncorp.mobile.util.common.cache.httpcache.HttpCacheType;
 import com.tmoncorp.mobile.util.common.security.Compress;
 import com.tmoncorp.mobile.util.common.security.SecurityUtils;
+import com.tmoncorp.mobile.util.common.type.PrimitiveDefaults;
 import org.aopalliance.intercept.MethodInvocation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -66,7 +67,7 @@ public class CacheService implements CacheProvider, HttpCacheInfoContainer {
         int i=0;
         for (Object param : invo.getArguments()) {
             CacheParam cacheParam=params[i].getAnnotation(CacheParam.class);
-            if (cacheParam == null || !cacheParam.ignore()) {
+            if (cacheParam == null || (!cacheParam.ignore() && !cacheParam.invalidate())) {
                 cp.append(KEY_SEPERATOR);
                 cp.append(param);
             }
@@ -135,11 +136,44 @@ public class CacheService implements CacheProvider, HttpCacheInfoContainer {
         cacheRepository.setRaw(keyName, cacheItem, realExpireTime);
     }
 
+    private boolean isNeedInvalidation(MethodInvocation mi){
+        Parameter[] params=mi.getMethod().getParameters();
+        int i=0;
+        for (Object param : mi.getArguments()) {
+            CacheParam cacheParam=params[i].getAnnotation(CacheParam.class);
+            if (cacheParam.invalidate()){
+                return (Boolean) param;
+            }
+            ++i;
+        }
+        return false;
+    }
+
     @Override
     public Object get(Cache cacheInfo, MethodInvocation mi) {
 
         String keyName = makeKeyName(mi, cacheInfo);
-        Object item = cacheRepository.getRaw(keyName);
+        Object item;
+
+        if (cacheInfo.invalidate()==Invalidate.OFF){
+            item = cacheRepository.getRaw(keyName);
+        }else {
+            if (isNeedInvalidation(mi)){
+                if (cacheInfo.invalidate()==Invalidate.REFRESH)
+                    item=null;
+                else{
+
+                    cacheRepository.removeRaw(keyName);
+                    if (mi.getMethod().getReturnType().isPrimitive())
+                        return PrimitiveDefaults.getDefault(mi.getMethod().getReturnType());
+                    return null;
+                }
+
+            }else{
+                item = cacheRepository.getRaw(keyName);
+            }
+        }
+
 
         if (item == null) {
             if (cacheInfo.type() != CacheType.ASYNC_ONLY) {

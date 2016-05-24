@@ -71,4 +71,11 @@ public @interface Cache {
      * @return
      */
     HttpCacheType browserCache() default HttpCacheType.EXPIRE_TIME;
+
+    /**
+     * Sets Cache Invalidate mode
+     * CacheParam should set if you want invalidate cache
+     * @return
+     */
+    Invalidate invalidate() default Invalidate.OFF;
 }

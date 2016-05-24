@@ -8,4 +8,5 @@ import java.lang.annotation.*;
 @Documented
 public @interface CacheParam {
     boolean ignore() default false;
+    boolean invalidate() default false;
 }
