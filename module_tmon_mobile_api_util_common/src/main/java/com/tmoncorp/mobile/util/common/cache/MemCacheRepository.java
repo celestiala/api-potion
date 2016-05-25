@@ -32,7 +32,7 @@ public class MemCacheRepository implements CacheRepository {
     }
 
     @Override public void removeRaw(String keyName) {
-        client.delete(keyName);
+        client.delete(makeRawKey(keyName));
     }
 
     @Override public CacheStorage getStorageType() {

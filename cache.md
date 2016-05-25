@@ -24,6 +24,9 @@
        String name() default ""; // 메서드명과 클래스명을 조합해 자동으로 생성하는 캐시 이름 대신에 유저가 지정한 캐시 이름을 사용한다. 단, 전달된 파라미터는 자동으로 만든다. 
     
        HttpCacheType browserCache() default HttpCacheType.EXPIRE_TIME; // 브라우저 캐시헤더 종류 설정 
+       
+       Invalidate invalidate() default Invalidate.OFF; // Cache invalidate mode 설정, 기본값 OFF, REFRESH 는 invalidate 파라미터로 true 전달시 캐시 재생성하고, DELETE는 삭제한다. 
+                                                       // DELETE 모드시에 타입에 따라 널 또는 0, false가 리턴된다. 
     }
     
     @Retention(RetentionPolicy.RUNTIME)
@@ -33,6 +36,9 @@
     public @interface CacheParam {
         boolean ignore() default false;    // 전달되는 파라미터를 캐시키로 사용하지 않을지 설정한다
                                            // 예: method(String a, @CacheParam(ignore=true) String b) b값이 어떤 값이 전달되든 a값이 같을때는 같은 캐시 값을 전달
+                                           
+        boolean invalidate() default false; // invalidate를 위해 전달되는 파라미터인지 여부, 기본값 false, invalidate = true 일때 이 파라미터는 캐시키로 사용되지 않는다. (ignore = false 더라도 true로 인식)
+                                            // invalidate를 위해 전달되는 파라미터는 boolean 형이어야 하고, true 전달시 invalidate 한다. 
     }
     
     public enum CacheType {
@@ -44,6 +50,13 @@
         MEMCACHED,            // Memcached
         LOCAL_MEMCACHED_BOTH  // 로컬 메모리에 있으면 로컬메모리, 없으면 Memcached (1 - 2차 Cache)
     }
+    
+    public enum Invalidate {
+        OFF,             // invalidate 기능 사용하지 않음
+        REFRESH,         // invalidate true 전달시 캐시 재생성하고 해당 값 리턴
+        DELETE           // 캐시 삭제하고 널, 0, false 리턴
+    }
+
 
 >    * 캐시 사용시 주의사항
 >    Parameter로 전달되는 값은 일정한 범위를 가지는 값이어야 한다. 
@@ -52,11 +65,34 @@
 >    LocalCache의 경우 갱신은 하지만, 만료된 캐시를 따로 제거하지 않는다. 또, 용량제한이 없으므로 메모리 관리에 있어서 유의해야 한다. 
  
  
+     Invalidate 예제 
+     @Cache(invalidate = Invalidate.REFRESH)
+         public long getCachedTime(@CacheParam(invalidate = true) boolean invalidate){
+             try {
+                 Thread.sleep(1000);
+             } catch (InterruptedException e) {
+                 e.printStackTrace();
+             }
+             return System.currentTimeMillis();
+         }
+         
+     @RequestMapping(method = RequestMethod.GET, value = "/cachedValue")
+         @ResponseBody
+         public long getCache() {
+             return testService.getCachedTime(false);                    //캐시된 값 리턴
+         }
+     
+     @RequestMapping(method = RequestMethod.GET, value = "/invalidate")
+     @ResponseBody
+     public long getCacheInvalidate() {
+             return testService.getCachedTime(true);                     //캐시를 새로 생성하여 리턴, Invalidate.DELETE 모드인경우 삭제만 수행
+     }
+ 
 ## Spring
     <dependency>
      <groupId>com.tmoncorp</groupId>
      <artifactId>module_tmon_mobile_api_util_spring</artifactId>
-     <version>0.1.10-SNAPSHOT</version>
+     <version>0.1.11-SNAPSHOT</version>
     </dependency>
 
 ### Cache On/Off
@@ -72,7 +108,7 @@ ClassName이 같은 경우 cache key가 겹칠 수 있어 구분하기 위해 ca
     <dependency>
      <groupId>com.tmoncorp</groupId>
      <artifactId>module_tmon_mobile_api_util_jersey</artifactId>
-     <version>0.1.4-SNAPSHOT</version>
+     <version>0.1.5-SNAPSHOT</version>
     </dependency>
  
 ### Cache On/Off
