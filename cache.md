@@ -108,7 +108,7 @@ ClassName이 같은 경우 cache key가 겹칠 수 있어 구분하기 위해 ca
     <dependency>
      <groupId>com.tmoncorp</groupId>
      <artifactId>module_tmon_mobile_api_util_jersey</artifactId>
-     <version>0.1.5-SNAPSHOT</version>
+     <version>0.1.4-SNAPSHOT</version>
     </dependency>
  
 ### Cache On/Off
