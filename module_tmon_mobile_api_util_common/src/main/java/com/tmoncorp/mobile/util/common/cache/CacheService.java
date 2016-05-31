@@ -156,10 +156,9 @@ public class CacheService implements CacheProvider, HttpCacheInfoContainer {
         String refresh;
         try {
             refresh = httpCacheSupport.getHttpRequestContainer().getHttpServletRequest().getParameter("refreshcache");
-            LOG.warn("refresh : {}",refresh);
             if (refresh !=null)
                 return Invalidate.REFRESH;
-        }catch (NullPointerException e){
+        }catch (NullPointerException | IllegalStateException e){
             // do nothing
         }
         return null;
