@@ -144,7 +144,7 @@ public class CacheService implements CacheProvider, HttpCacheInfoContainer {
         int i=0;
         for (Object param : mi.getArguments()) {
             CacheParam cacheParam=params[i].getAnnotation(CacheParam.class);
-            if (cacheParam.invalidate()){
+            if (cacheParam !=null && cacheParam.invalidate()){
                 return (Boolean) param;
             }
             ++i;
@@ -166,6 +166,8 @@ public class CacheService implements CacheProvider, HttpCacheInfoContainer {
     }
 
     private Invalidate getInvalidateFromMethod(Cache cacheInfo, MethodInvocation mi){
+        if (cacheInfo.invalidate() == Invalidate.OFF)
+            return Invalidate.OFF;
         if (isNeedInvalidation(mi))
             return cacheInfo.invalidate();
         return Invalidate.OFF;
