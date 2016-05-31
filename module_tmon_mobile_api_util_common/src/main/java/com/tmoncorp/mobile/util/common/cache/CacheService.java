@@ -25,6 +25,9 @@ public class CacheService implements CacheProvider, HttpCacheInfoContainer {
     protected final AsyncWorker asyncWorker;
     protected HttpCacheSupport httpCacheSupport;
     protected String cachePrefix = "";
+
+    private boolean isSupportInvalidateRequest=false;
+    private boolean invalidationMode=false;
     private boolean isHttpCacheSupport = false;
 
     public CacheService(CacheRepository repo, AsyncWorker worker) {
@@ -149,28 +152,53 @@ public class CacheService implements CacheProvider, HttpCacheInfoContainer {
         return false;
     }
 
+    private Invalidate getInvalidateFromRequest(){
+        String refresh;
+        try {
+            refresh = httpCacheSupport.getHttpRequestContainer().getHttpServletRequest().getParameter("refreshcache");
+            LOG.warn("refresh : {}",refresh);
+            if (refresh !=null)
+                return Invalidate.REFRESH;
+        }catch (NullPointerException e){
+            // do nothing
+        }
+        return null;
+    }
+
+    private Invalidate getInvalidateFromMethod(Cache cacheInfo, MethodInvocation mi){
+        if (isNeedInvalidation(mi))
+            return cacheInfo.invalidate();
+        return Invalidate.OFF;
+    }
+
+    private Invalidate getInvalidate(Cache cacheInfo, MethodInvocation mi){
+        if (isSupportInvalidateRequest) {
+            Invalidate invalidate = getInvalidateFromRequest();
+            if (invalidate != null)
+                return invalidate;
+        }
+        return getInvalidateFromMethod(cacheInfo,mi);
+    }
+
     @Override
     public Object get(Cache cacheInfo, MethodInvocation mi) {
 
         String keyName = makeKeyName(mi, cacheInfo);
         Object item;
 
-        if (cacheInfo.invalidate()==Invalidate.OFF){
+        Invalidate invalidate=getInvalidate(cacheInfo,mi);
+
+        if (invalidate==Invalidate.OFF){
             item = cacheRepository.getRaw(keyName);
         }else {
-            if (isNeedInvalidation(mi)){
-                if (cacheInfo.invalidate()==Invalidate.REFRESH)
-                    item=null;
-                else{
+            if (invalidate==Invalidate.REFRESH)
+                item=null;
+            else{
 
-                    cacheRepository.removeRaw(keyName);
-                    if (mi.getMethod().getReturnType().isPrimitive())
-                        return PrimitiveDefaults.getDefault(mi.getMethod().getReturnType());
-                    return null;
-                }
-
-            }else{
-                item = cacheRepository.getRaw(keyName);
+                cacheRepository.removeRaw(keyName);
+                if (mi.getMethod().getReturnType().isPrimitive())
+                    return PrimitiveDefaults.getDefault(mi.getMethod().getReturnType());
+                return null;
             }
         }
 
@@ -263,10 +291,20 @@ public class CacheService implements CacheProvider, HttpCacheInfoContainer {
 
         isHttpCacheSupport = (cacheSupport != null);
         httpCacheSupport = cacheSupport;
+        setInvalidationMode();
     }
 
     public Object compress(Object rawData) throws Throwable{
         return Compress.toGzipByte(((String)rawData).getBytes());
+    }
+
+    public void setSupportInvalidateRequest(boolean isSupport){
+        invalidationMode=isSupport;
+        setInvalidationMode();
+    }
+
+    private void setInvalidationMode(){
+        isSupportInvalidateRequest=invalidationMode && isHttpCacheSupport;
     }
 
 }

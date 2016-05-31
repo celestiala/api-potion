@@ -1,25 +1,62 @@
 package com.tmoncorp.mobile.util.spring.cache;
 
-import com.tmoncorp.mobile.util.common.cache.Cache;
-import com.tmoncorp.mobile.util.common.cache.CacheMode;
+import com.tmoncorp.mobile.util.common.cache.*;
+import com.tmoncorp.mobile.util.spring.async.AsyncService;
 import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.support.PropertiesLoaderUtils;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.PostConstruct;
 import java.lang.reflect.Method;
+import java.util.EnumMap;
+import java.util.Map;
+import java.util.Properties;
 
 @Component
-public class MCacheInterceptor implements MethodInterceptor {
+public class MCacheInterceptor extends CacheInterceptor {
 
     private static final Logger LOG = LoggerFactory.getLogger(MCacheInterceptor.class);
+    private static final String ENVIRONMENT_PROPERTY = "deploy.phase";
+    private static final String APPLICATION_PROPERTIES = "applicationProperty.properties";
 
     private CacheMode cacheMode = CacheMode.ON;
 
     @Autowired
     private MemcacheClient client;
+
+    @Autowired
+    private SpringHttpCacheSupport springHttpCacheSupport;
+
+    @Autowired
+    private AsyncService ayncService;
+
+    public MCacheInterceptor() {
+        super(new EnumMap<>(CacheStorage.class));
+    }
+
+    @PostConstruct
+    public void init(){
+        CacheService memoryCache = new SpringCacheService(new LocalCacheRepository(),run -> ayncService.submitAsync(run));
+        memoryCache.setHttpCache(springHttpCacheSupport);
+
+        try {
+            Properties props = PropertiesLoaderUtils.loadAllProperties(APPLICATION_PROPERTIES);
+            String buildEnv = props.getProperty(ENVIRONMENT_PROPERTY).substring(0, 2);
+
+            boolean isDebug=!buildEnv.startsWith("r");
+            memoryCache.setSupportInvalidateRequest(isDebug);
+
+        } catch (Exception e) {
+            //LOGGER.error("memcache client initialize failed : {}", e);
+        }
+
+        cacheStorageServiceMap.put(CacheStorage.LOCAL, memoryCache);
+        cacheStorageServiceMap.put(CacheStorage.MEMCACHED, client.getMemcacheService());
+    }
 
     public CacheMode getMode() {
         return cacheMode;
@@ -42,9 +79,7 @@ public class MCacheInterceptor implements MethodInterceptor {
         if (cacheMode == CacheMode.OFF)
             return mi.proceed();
 
-        Method method = mi.getMethod();
-        Cache cacheInfo = method.getAnnotation(Cache.class);
-        return client.get(cacheInfo, mi);
+        return super.invoke(mi);
     }
 
 }

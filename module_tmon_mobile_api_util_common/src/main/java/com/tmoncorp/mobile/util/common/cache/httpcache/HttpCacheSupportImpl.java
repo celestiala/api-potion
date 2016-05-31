@@ -24,4 +24,8 @@ public class HttpCacheSupportImpl implements HttpCacheSupport {
         if (container.getHttpServletRequest() != null)
             container.getHttpServletRequest().setAttribute(HttpCacheConstant.EXPIRE, zonedDateTime.format(DateTimeFormatter.RFC_1123_DATE_TIME));
     }
+
+    @Override public HttpServletRequestContainer getHttpRequestContainer() {
+        return container;
+    }
 }

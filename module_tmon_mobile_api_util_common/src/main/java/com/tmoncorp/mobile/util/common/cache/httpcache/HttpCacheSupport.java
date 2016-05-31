@@ -6,4 +6,6 @@ public interface HttpCacheSupport {
     void setEtag(String etag);
 
     void setExpire(LocalDateTime expire);
+
+    HttpServletRequestContainer getHttpRequestContainer();
 }

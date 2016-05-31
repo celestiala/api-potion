@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.support.PropertiesLoaderUtils;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.PostConstruct;
 import java.util.Properties;
 
 @Component
@@ -21,9 +22,14 @@ public class MemcacheClient implements CacheProvider, CacheRepository {
     private static final String CACHE_PREFIX_DEFAULT = "cache";
     private static final String APPLICATION_PROPERTIES = "applicationProperty.properties";
     @Autowired
-    AsyncService ayncService;
+    private AsyncService ayncService;
     private SpringCacheService innerCacheService;
     private MemCacheRepository memCacheRepository;
+
+    @Autowired
+    private SpringHttpCacheSupport httpCacheSupport;
+
+    private boolean isDebug=false;
 
     public MemcacheClient() {
 
@@ -33,11 +39,19 @@ public class MemcacheClient implements CacheProvider, CacheRepository {
             String memcacheUrls = props.getProperty(MEMCACHE_SERVER_PROPERTY);
             String cachePrefix = props.getProperty(CACHE_PREFIX_PROPERTY, CACHE_PREFIX_DEFAULT);
 
+            isDebug=!buildEnv.startsWith("r");
+
             memCacheRepository = new MemCacheRepository(memcacheUrls, buildEnv, cachePrefix);
             innerCacheService = new SpringCacheService(memCacheRepository, run -> ayncService.submitAsync(run));
         } catch (Exception e) {
             LOGGER.error("memcache client initialize failed : {}", e);
         }
+    }
+
+    @PostConstruct
+    public void init(){
+        innerCacheService.setHttpCache(httpCacheSupport);
+        innerCacheService.setSupportInvalidateRequest(isDebug);
     }
 
     @Override public void set(String keyName, Object value, Cache cacheInfo) {
@@ -70,5 +84,9 @@ public class MemcacheClient implements CacheProvider, CacheRepository {
 
     public void setPrefix(String prefix) {
         innerCacheService.setPrefix(prefix);
+    }
+
+    public SpringCacheService getMemcacheService(){
+        return innerCacheService;
     }
 }

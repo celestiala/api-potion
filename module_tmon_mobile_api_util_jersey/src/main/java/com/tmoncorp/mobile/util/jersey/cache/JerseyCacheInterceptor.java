@@ -25,6 +25,7 @@ public class JerseyCacheInterceptor extends CacheInterceptor {
     public void init() {
         CacheService memoryCache = new JerseyCacheRepository(new LocalCacheRepository());
         memoryCache.setHttpCache(cacheSupport);
+        memoryCache.setSupportInvalidateRequest(ciService.isDebugMode());
 
         cacheStorageServiceMap.put(CacheStorage.LOCAL, memoryCache);
         cacheStorageServiceMap.put(CacheStorage.MEMCACHED, ciService.getCacheRepo());

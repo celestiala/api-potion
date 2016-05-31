@@ -2,7 +2,7 @@ package com.tmoncorp.mobile.init;
 
 
 import com.tmoncorp.mobile.util.jersey.cache.CacheFilter;
-import com.tmoncorp.mobile.util.jersey.cache.CacheInterceptorBinder;
+import com.tmoncorp.mobile.util.jersey.config.MobileUtilBinder;
 import org.glassfish.jersey.server.ResourceConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,20 +21,6 @@ public class JerseyTestConfig extends ResourceConfig {
 
 	}
 
-	private Properties loadProperties() {
-		LOG.info("initializating backend api sources.");
-		InputStream in = getClass().getClassLoader().getResourceAsStream("application.properties");
-		Properties p = new Properties();
-		try {
-			p.load(in);
-			LOG.info("Properties: {}", p.toString());
-		} catch (IOException e) {
-			LOG.error("Properties: loding error", e);
-		}
-
-		return p;
-	}
-
 	private void initResources() {
 
 		packages("com.tmoncorp.mobile.util.jersey.cache");
@@ -43,8 +29,7 @@ public class JerseyTestConfig extends ResourceConfig {
 
 
 	private void registerRepositoryBinder() {
-		Properties p = loadProperties();
-		register(new RepositoryBinder(p));
-		register(new CacheInterceptorBinder());
+		register(new RepositoryBinder());
+		register(new MobileUtilBinder());
 	}
 }

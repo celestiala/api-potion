@@ -3,6 +3,7 @@ package com.tmoncorp.mobile.util.jersey.cache;
 import com.tmoncorp.mobile.util.common.cache.CacheMode;
 import com.tmoncorp.mobile.util.common.cache.MemCacheRepository;
 
+import javax.inject.Inject;
 import javax.inject.Singleton;
 import java.util.Properties;
 
@@ -15,15 +16,13 @@ public class JerseyMemCacheRepository extends JerseyCacheRepository {
     private final boolean isModeSeletable;
     private CacheMode mode = CacheMode.ON;
 
+    @Inject
     public JerseyMemCacheRepository(Properties properties) {
         super(new MemCacheRepository(properties.getProperty(MEMCACHE_SERVER_PROPERTY),
                 properties.getProperty(ENVIRONMENT_PROPERTY)
                 , MOBILE_GATEWAY_CACHE_KEY));
 
-        if (properties.getProperty(ENVIRONMENT_PROPERTY).trim().startsWith("r"))
-            isModeSeletable = false;
-        else
-            isModeSeletable = true;
+        isModeSeletable=properties.getProperty(ENVIRONMENT_PROPERTY).trim().startsWith("r");
     }
 
     public CacheMode getMode() {

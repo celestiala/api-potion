@@ -2,6 +2,7 @@ package com.tmoncorp.mobile;
 
 import com.tmoncorp.mobile.util.common.cache.Cache;
 import com.tmoncorp.mobile.util.common.cache.CacheParam;
+import com.tmoncorp.mobile.util.common.cache.CacheStorage;
 import com.tmoncorp.mobile.util.common.cache.Invalidate;
 import org.springframework.stereotype.Service;
 
@@ -11,7 +12,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class CacheTestService {
 
-    @Cache(invalidate = Invalidate.REFRESH)
+    @Cache(invalidate = Invalidate.REFRESH,storage = CacheStorage.LOCAL)
     public long getCachedTime(@CacheParam(invalidate = true) boolean invalidate){
         try {
             Thread.sleep(1000);

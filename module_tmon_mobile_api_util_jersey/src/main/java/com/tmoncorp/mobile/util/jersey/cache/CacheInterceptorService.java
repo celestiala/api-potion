@@ -16,37 +16,42 @@ import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.core.Context;
+import java.io.IOException;
+import java.io.InputStream;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.util.Collections;
 import java.util.List;
+import java.util.Properties;
 
 @Service
 public class CacheInterceptorService implements InterceptionService, HttpServletRequestContainer {
 
     private static final Logger LOG = LoggerFactory.getLogger(CacheInterceptorService.class);
-    private final List<MethodInterceptor> intercepters;
-    private final JerseyCacheInterceptor intercepter;
+
+    private static final String ENVIRONMENT_PROPERTY = "deploy.phase";
 
     @Inject
     private JerseyMemCacheRepository cacheRepo;
 
+    @Inject
+    private Properties properties;
+
     @Context
     private HttpServletRequest request;
 
+    private List<MethodInterceptor> intercepters;
+    private JerseyCacheInterceptor intercepter;
     private HttpCacheSupport cacheSupport;
-
-    public CacheInterceptorService() {
-
-        cacheSupport = new HttpCacheSupportImpl(this);
-        intercepter = new JerseyCacheInterceptor(this);
-        intercepters = Collections.<MethodInterceptor>singletonList(intercepter);
-
-    }
+    private boolean isDebug=false;
 
     @PostConstruct
     public void setRepository() {
         LOG.debug("postConstruct called");
+        isDebug=!properties.getProperty(ENVIRONMENT_PROPERTY).trim().startsWith("r");
+        cacheSupport = new HttpCacheSupportImpl(this);
+        intercepter = new JerseyCacheInterceptor(this);
+        intercepters = Collections.<MethodInterceptor>singletonList(intercepter);
         intercepter.init();
     }
 
@@ -75,7 +80,12 @@ public class CacheInterceptorService implements InterceptionService, HttpServlet
 
     public JerseyMemCacheRepository getCacheRepo() {
         cacheRepo.setHttpCache(cacheSupport);
+        cacheRepo.setSupportInvalidateRequest(isDebug);
         return cacheRepo;
+    }
+
+    public boolean isDebugMode(){
+        return isDebug;
     }
 
     @Override

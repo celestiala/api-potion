@@ -8,17 +8,27 @@ import org.aopalliance.intercept.MethodInvocation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.PostConstruct;
+
 @Component
 public class MemoryCache implements CacheProvider {
 
     @Autowired
-    AsyncService ayncService;
+    private AsyncService ayncService;
+
+    @Autowired
+    private SpringHttpCacheSupport httpCacheSupport;
 
     private SpringCacheService innerCacheService;
 
     public MemoryCache() {
 
         innerCacheService = new SpringCacheService(new LocalCacheRepository(), run -> ayncService.submitAsync(run));
+    }
+
+    @PostConstruct
+    public void init(){
+        innerCacheService.setHttpCache(httpCacheSupport);
     }
 
     @Override public void set(String keyName, Object value, Cache cacheInfo) {
