@@ -1,4 +1,12 @@
 # Release Note
+## 2016-05-31
+### module_tmon_mobile_api_spring 0.1.12
+### module_tmon_mobile_api_jersey 0.1.5
+### module_tmon_mobile_api_common 0.1.6
+    * New Features
+    Query Parameter "refreshcache"를 통해 캐시 갱신 가능
+    Spring Local Cache 지원
+
 
 ## 2016-03-14
 ### module_tmon_mobile_api_util_spring 0.1.9
