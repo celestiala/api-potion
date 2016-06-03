@@ -25,7 +25,6 @@ import java.util.Collection;
 public class SpringHttpClientFactory {
 
     private CloseableHttpClient client;
-    private IdleConnectionMonitor idleConnectionMonitor;
 
 
     private static final Logger LOG = LoggerFactory.getLogger(SpringHttpClientFactory.class);
@@ -44,14 +43,9 @@ public class SpringHttpClientFactory {
 
     @PostConstruct
     public void init(){
-        idleConnectionMonitor=new IdleConnectionMonitor();
         HttpClientBuilder builder=new HttpClientBuilder();
-        builder.setIdleConnecetionMonitor(idleConnectionMonitor);
         configure(builder);
         client=builder.build();
-        Thread monitorThread=new Thread(idleConnectionMonitor);
-        monitorThread.setName("HttpIdleMonitor");
-        monitorThread.start();
     }
 
     protected void addDefaultHeaders(Collection<Header> headers){
@@ -78,7 +72,6 @@ public class SpringHttpClientFactory {
 
     @PreDestroy
     public void cleanUp(){
-        idleConnectionMonitor.shudown();
         try {
             client.close();
         } catch (IOException e) {
