@@ -78,6 +78,11 @@
             <artifactId>spymemcached</artifactId>
             <version>2.12.0</version>
         </dependency>
+        <dependency>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpasyncclient</artifactId>
+            <version>4.1.1</version>
+        </dependency>
     </dependencies>
     <parent>
         <groupId>com.tmoncorp</groupId>

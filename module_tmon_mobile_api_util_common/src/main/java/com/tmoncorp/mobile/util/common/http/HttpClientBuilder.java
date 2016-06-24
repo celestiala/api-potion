@@ -13,7 +13,7 @@ import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
 
 import java.util.Collection;
 
-public class HttpClientBuilder {
+public class HttpClientBuilder implements ClientBuilder{
 
     private final PoolingHttpClientConnectionManager cm;
     private IdleConnectionMonitor im;

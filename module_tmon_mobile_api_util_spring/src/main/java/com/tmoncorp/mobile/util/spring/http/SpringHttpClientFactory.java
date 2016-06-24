@@ -2,11 +2,13 @@ package com.tmoncorp.mobile.util.spring.http;
 
 import com.tmoncorp.mobile.util.common.clientinfo.ClientInfoProvider;
 import com.tmoncorp.mobile.util.common.clientinfo.HeaderNames;
+import com.tmoncorp.mobile.util.common.http.AsyncHttpClientBuilder;
+import com.tmoncorp.mobile.util.common.http.ClientBuilder;
 import com.tmoncorp.mobile.util.common.http.HttpClientBuilder;
-import com.tmoncorp.mobile.util.common.http.IdleConnectionMonitor;
 import org.apache.http.Header;
 import org.apache.http.HttpHeaders;
 import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.nio.client.CloseableHttpAsyncClient;
 import org.apache.http.message.BasicHeader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,6 +27,7 @@ import java.util.Collection;
 public class SpringHttpClientFactory {
 
     private CloseableHttpClient client;
+    private CloseableHttpAsyncClient asyncClient;
 
 
     private static final Logger LOG = LoggerFactory.getLogger(SpringHttpClientFactory.class);
@@ -46,6 +49,10 @@ public class SpringHttpClientFactory {
         HttpClientBuilder builder=new HttpClientBuilder();
         configure(builder);
         client=builder.build();
+
+        AsyncHttpClientBuilder asyncBuilder= new AsyncHttpClientBuilder();
+        configure(builder);
+        asyncClient=asyncBuilder.build();
     }
 
     protected void addDefaultHeaders(Collection<Header> headers){
@@ -53,7 +60,7 @@ public class SpringHttpClientFactory {
         headers.add(new BasicHeader(HttpHeaders.CONNECTION,"close"));
     }
 
-    protected void configure(HttpClientBuilder builder){
+    protected void configure(ClientBuilder builder){
         ArrayList<Header> headers=new ArrayList<>();
         addDefaultHeaders(headers);
 
@@ -68,6 +75,10 @@ public class SpringHttpClientFactory {
 
     public CloseableHttpClient getClient(){
         return client;
+    }
+
+    public CloseableHttpAsyncClient getAsyncClient(){
+        return asyncClient;
     }
 
     @PreDestroy
