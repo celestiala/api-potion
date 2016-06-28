@@ -16,8 +16,8 @@ public class AsyncHttpClientBuilder implements ClientBuilder{
     private PoolingNHttpClientConnectionManager connectionManager;
     private IOReactorConfig.Builder ioReactorBuilder;
     private Collection<Header> defaultHeaders;
-    private int maxTotal;
-    private int defaultMaxPerRoute;
+    private int maxTotal=500;
+    private int defaultMaxPerRoute=100;
     private String userAgent;
 
     public AsyncHttpClientBuilder(){

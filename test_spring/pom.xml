@@ -48,7 +48,12 @@
         <dependency>
             <groupId>com.tmoncorp</groupId>
             <artifactId>module_tmon_mobile_api_util_spring</artifactId>
-            <version>0.1.12-SNAPSHOT</version>
+            <version>0.1.13-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>com.tmoncorp</groupId>
+            <artifactId>module_tmon_mobile_api_util_common</artifactId>
+            <version>0.1.7-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.springframework</groupId>
@@ -78,6 +83,11 @@
             <groupId>javax.validation</groupId>
             <artifactId>validation-api</artifactId>
             <version>1.1.0.Final</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpasyncclient</artifactId>
+            <version>4.0.2</version>
         </dependency>
     </dependencies>
 

@@ -92,7 +92,7 @@
     <dependency>
      <groupId>com.tmoncorp</groupId>
      <artifactId>module_tmon_mobile_api_util_spring</artifactId>
-     <version>0.1.12-SNAPSHOT</version>
+     <version>0.1.13-SNAPSHOT</version>
     </dependency>
 
 ### Cache On/Off
