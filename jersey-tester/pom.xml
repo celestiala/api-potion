@@ -208,7 +208,7 @@
 		</dependency>
 		<dependency>
 			<groupId>com.tmoncorp</groupId>
-			<artifactId>module_tmon_mobile_api_util_jersey</artifactId>
+			<artifactId>api-potion-jersey</artifactId>
 			<version>0.1.5-SNAPSHOT</version>
 		</dependency>
 		<dependency>
