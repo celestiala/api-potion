@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <artifactId>api-potion-jersey</artifactId>
 
-    <version>0.1.5-SNAPSHOT</version>
+    <version>0.0.1</version>
     <packaging>jar</packaging>
 
     <build>
@@ -34,7 +34,7 @@
 
                         <configuration>
                             <includes>
-                                <include>com/tmoncorp/mobile/util/jersey/**/*</include>
+                                <include>com/tmoncorp/apipotion/jersey/**/*</include>
                             </includes>
 
                         </configuration>
@@ -100,7 +100,7 @@
         <dependency>
             <groupId>com.tmoncorp</groupId>
             <artifactId>api-potion-core</artifactId>
-            <version>0.1.7-SNAPSHOT</version>
+            <version>0.0.1</version>
         </dependency>
     </dependencies>
     <properties>
@@ -110,7 +110,7 @@
     </properties>
     <parent>
         <groupId>com.tmoncorp</groupId>
-        <artifactId>tmon-parent-web</artifactId>
-        <version>1.0.0-SNAPSHOT</version>
+        <artifactId>api-potion</artifactId>
+        <version>0.0.1</version>
     </parent>
 </project>

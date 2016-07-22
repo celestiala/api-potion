@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <artifactId>api-potion-core</artifactId>
 
-    <version>0.1.7-SNAPSHOT</version>
+    <version>0.0.1</version>
     <packaging>jar</packaging>
 
     <build>
@@ -34,7 +34,7 @@
 
                         <configuration>
                             <includes>
-                                <include>com/tmoncorp/mobile/util/common/**/*</include>
+                                <include>com/tmoncorp/apipotion/core/**/*</include>
                             </includes>
 
                         </configuration>
@@ -79,10 +79,39 @@
             <artifactId>httpasyncclient</artifactId>
             <version>4.1.1</version>
         </dependency>
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+            <version>3.4</version>
+        </dependency>
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>servlet-api</artifactId>
+            <version>2.5</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-context</artifactId>
+            <version>4.2.0.RELEASE</version>
+            <exclusions>
+                <exclusion>
+                    <artifactId>log4j</artifactId>
+                    <groupId>log4j</groupId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.slf4j</groupId>
+                    <artifactId>slf4j-log4j12</artifactId>
+                </exclusion>
+                <exclusion>
+                    <artifactId>common-logging</artifactId>
+                    <groupId>common-logging</groupId>
+                </exclusion>
+            </exclusions>
+        </dependency>
     </dependencies>
     <parent>
         <groupId>com.tmoncorp</groupId>
-        <artifactId>tmon-parent-web</artifactId>
-        <version>1.0.0-SNAPSHOT</version>
+        <artifactId>api-potion</artifactId>
+        <version>0.0.1</version>
     </parent>
 </project>

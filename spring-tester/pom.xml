@@ -47,12 +47,12 @@
         <dependency>
             <groupId>com.tmoncorp</groupId>
             <artifactId>api-potion-spring</artifactId>
-            <version>0.1.13-SNAPSHOT</version>
+            <version>0.0.1</version>
         </dependency>
         <dependency>
             <groupId>com.tmoncorp</groupId>
             <artifactId>api-potion-core</artifactId>
-            <version>0.1.7-SNAPSHOT</version>
+            <version>0.0.1</version>
         </dependency>
         <dependency>
             <groupId>org.springframework</groupId>
