@@ -2,12 +2,10 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
     <modelVersion>4.0.0</modelVersion>
-
-    <groupId>com.tmoncorp.mobile</groupId>
     <packaging>war</packaging>
     <version>1.0-SNAPSHOT</version>
-    <name>test_jersey</name>
-    <artifactId>test_jersey</artifactId>
+    <name>jersey-tester</name>
+    <artifactId>jersey-tester</artifactId>
 	<profiles>
 		<profile>
 			<id>local</id>
@@ -209,7 +207,7 @@
 		<dependency>
 			<groupId>com.tmoncorp</groupId>
 			<artifactId>api-potion-jersey</artifactId>
-			<version>0.1.5-SNAPSHOT</version>
+			<version>0.0.1</version>
 		</dependency>
 		<dependency>
 			<groupId>org.glassfish</groupId>
@@ -236,9 +234,9 @@
          -->
     </properties>
 
-    <parent>
-        <groupId>com.tmoncorp</groupId>
-        <artifactId>tmon-parent-standalone-web</artifactId>
-        <version>1.0.0-SNAPSHOT</version>
-    </parent>
+	<parent>
+		<groupId>com.tmoncorp</groupId>
+		<artifactId>api-potion</artifactId>
+		<version>0.0.1</version>
+	</parent>
 </project>
