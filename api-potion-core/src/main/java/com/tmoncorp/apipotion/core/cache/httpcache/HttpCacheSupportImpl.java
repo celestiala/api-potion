@@ -21,8 +21,15 @@ public class HttpCacheSupportImpl implements HttpCacheSupport {
     @Override public void setExpire(LocalDateTime expire) {
 
         ZonedDateTime zonedDateTime = expire.atZone(ZoneId.systemDefault());
-        if (container.getHttpServletRequest() != null)
-            container.getHttpServletRequest().setAttribute(HttpCacheConstant.EXPIRE, zonedDateTime.format(DateTimeFormatter.RFC_1123_DATE_TIME));
+        if (container.getHttpServletRequest() != null) {
+            try {
+                container.getHttpServletRequest().setAttribute(HttpCacheConstant.EXPIRE, zonedDateTime.format(DateTimeFormatter.RFC_1123_DATE_TIME));
+            }catch(IllegalStateException e){
+                // do nothing
+                // TODO: remove this Exception by check running thread
+                return;
+            }
+        }
     }
 
     @Override public HttpServletRequestContainer getHttpRequestContainer() {
