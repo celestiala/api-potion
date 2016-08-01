@@ -110,7 +110,7 @@
         </dependency>
     </dependencies>
     <parent>
-        <groupId>com.tmoncorp</groupId>
+        <groupId>com.ticketmonster</groupId>
         <artifactId>api-potion</artifactId>
         <version>0.0.1</version>
     </parent>
