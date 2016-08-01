@@ -10,3 +10,6 @@ You can use local memory / memcached cache easily. Put @Cache annotation is need
 
 [Http Client](http-client.md): HTTP Client for API Request
 Http Client helper
+
+## Copyright and license
+Code and documentation copyright 2016 Ticketmonster, Inc. Code released under [the MIT license](LICENSE). Docs released under [Creative Commons](https://creativecommons.org/licenses/by/4.0/)
