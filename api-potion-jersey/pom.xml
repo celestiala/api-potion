@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <artifactId>api-potion-jersey</artifactId>
 
-    <version>0.0.1</version>
+    <version>0.0.1-SNAPSHOT</version>
     <packaging>jar</packaging>
 
     <build>
@@ -98,9 +98,9 @@
             <artifactId>jersey-apache-connector</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.ticketmonster</groupId>
+            <groupId>com.github.tmoncorp</groupId>
             <artifactId>api-potion-core</artifactId>
-            <version>0.0.1</version>
+            <version>0.0.1-SNAPSHOT</version>
         </dependency>
     </dependencies>
     <properties>
@@ -109,8 +109,8 @@
 
     </properties>
     <parent>
-        <groupId>com.ticketmonster</groupId>
+        <groupId>com.github.tmoncorp</groupId>
         <artifactId>api-potion</artifactId>
-        <version>0.0.1</version>
+        <version>0.0.1-SNAPSHOT</version>
     </parent>
 </project>
