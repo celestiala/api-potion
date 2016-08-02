@@ -95,9 +95,9 @@ Just Put @Cache Annotation to your method.
  
 ## Spring
     <dependency>
-     <groupId>com.tmoncorp</groupId>
+     <groupId>com.github.tmoncorp</groupId>
      <artifactId>api-potion-spring</artifactId>
-     <version>0.0.1</version>
+     <version>0.0.1-SNAPSHOT</version>
     </dependency>
 
 ### Cache On/Off
@@ -109,9 +109,9 @@ cache.prefix=apiprefix
  
 ## Jersey
     <dependency>
-     <groupId>com.tmoncorp</groupId>
+     <groupId>com.github.tmoncorp</groupId>
      <artifactId>api-potion-jersey</artifactId>
-     <version>0.0.1</version>
+     <version>0.0.1-SNAPSHOT</version>
     </dependency>
  
 ### Cache On/Off
