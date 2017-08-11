@@ -18,17 +18,17 @@ public class AsyncExecutor {
 
     private static final int THREAD_POOL_MIN_CORE_SIZE = 4;
     private static final int THREAD_POOL_MAX_SIZE = 24;
-    private static final int TASK_TIMEOUT = 10 * 1000; //ms
+    private static final int TASK_TIMEOUT = 20 * 1000; //ms
     private static final int TASK_DELAY = 10;
     private ThreadPoolTaskExecutor pool;
 
     public void init() throws Exception {
-        int maxPoolSize = Runtime.getRuntime().availableProcessors();
+        int maxPoolSize = Runtime.getRuntime().availableProcessors() * 3;
         int corePoolSize = 0;
         if (maxPoolSize < 1) {
             maxPoolSize = THREAD_POOL_MAX_SIZE;
         }
-        corePoolSize = maxPoolSize / 2; //half
+        corePoolSize = maxPoolSize / 4;
         if (corePoolSize < THREAD_POOL_MIN_CORE_SIZE) {
             corePoolSize = THREAD_POOL_MIN_CORE_SIZE;
         }
@@ -76,7 +76,7 @@ public class AsyncExecutor {
     }
 
     private <A> void cancelJobs(LinkedList<Future<A>> futureList){
-        futureList.stream().forEach(f->f.cancel(true));
+        futureList.stream().forEach(f->f.cancel(false));
     }
 
     private <T, A> List<T> getSortedList(LinkedList<Future<A>> futureList, AsyncListAdder<T, A> itemAdder,int timeout) {

@@ -14,6 +14,7 @@ import org.slf4j.LoggerFactory;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
 import java.time.LocalDateTime;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class CacheService implements CacheProvider, HttpCacheInfoContainer {
 
@@ -30,9 +31,13 @@ public class CacheService implements CacheProvider, HttpCacheInfoContainer {
     private boolean invalidationMode=false;
     private boolean isHttpCacheSupport = false;
 
+    private ConcurrentHashMap<String,LocalDateTime> currentJobs;
+    private static final int RE_REQUEST_AFTER = 10; //minutes
+
     public CacheService(CacheRepository repo, AsyncWorker worker) {
         cacheRepository = repo;
         asyncWorker = worker;
+        currentJobs = new ConcurrentHashMap<>();
     }
 
     protected void setExpire(CacheItem item) {
@@ -58,7 +63,6 @@ public class CacheService implements CacheProvider, HttpCacheInfoContainer {
         if (name.isEmpty()) {
             addMethodName(cb, invo);
         } else {
-            cb.append(cacheInfo);
             cb.append(name);
         }
 
@@ -227,8 +231,6 @@ public class CacheService implements CacheProvider, HttpCacheInfoContainer {
     }
 
     private Object expireCache(String keyName, CacheItem item, Cache cacheInfo, MethodInvocation mi) {
-        if (cacheInfo.type() == CacheType.ASYNC_ONLY)
-            return null;
 
         if (cacheInfo.type() == CacheType.SYNC) {
             cacheRepository.removeRaw(keyName);
@@ -258,9 +260,9 @@ public class CacheService implements CacheProvider, HttpCacheInfoContainer {
         } catch (Exception e) {
             if (cacheInfo.setOnError())
                 cacheRepository.removeRaw(keyName);
-            LOG.error("Fail to make a Async cache : {}", e);
+            LOG.error("Making cache data failed {}", e.getMessage(),e);
         } catch (Throwable e) {
-            LOG.error("Fail to make a Async cache, error : {}", e);
+            LOG.error("Cache making failed : {}", e.getMessage(), e);
             throw new Error(e);
         }
         set(keyName, result, cacheInfo);
@@ -268,14 +270,47 @@ public class CacheService implements CacheProvider, HttpCacheInfoContainer {
 
     }
 
-    protected void makeAsyncCache(final String keyName, final Cache cacheinfo, MethodInvocation mi) {
-        asyncWorker.submitAsync(()->{
-            try {
-                makeExpiredCache(keyName, cacheinfo, mi);
-            } catch (Exception e) {
-                LOG.warn("Cache set exception {}", e);
-            }
-        });
+    private boolean isExpiredStatus(LocalDateTime requestTime){
+        if (requestTime == null)
+            return true;
+        return LocalDateTime.now().isAfter(requestTime.plusMinutes(RE_REQUEST_AFTER));
+    }
+
+    protected void makeAsyncCache(final String keyName, final Cache cacheinfo, MethodInvocation mi){
+        makeAsyncCache(keyName,cacheinfo,mi,null);
+    }
+
+    protected void beforeMakeAsyncCache(Object object){
+
+    }
+
+    protected void afterMakeAsyncCache(){
+
+    }
+
+    protected void makeAsyncCache(final String keyName, final Cache cacheinfo, MethodInvocation mi,Object object) {
+        LocalDateTime requestTime=currentJobs.get(keyName);
+        if (isExpiredStatus(requestTime)) {
+            requestTime = LocalDateTime.now();
+        }
+        else
+            return;
+
+
+        LocalDateTime queuedTime=currentJobs.putIfAbsent(keyName,requestTime);
+        if (queuedTime == null || queuedTime == requestTime)
+            asyncWorker.submitAsync(()->{
+                try {
+                    beforeMakeAsyncCache(object);
+                    makeExpiredCache(keyName, cacheinfo, mi);
+                } catch (Exception e) {
+                    LOG.warn("Cache set Exception {}", e);
+                } finally {
+                    currentJobs.remove(keyName);
+                    afterMakeAsyncCache();
+                }
+            });
+
     }
 
     protected boolean isExpiredCache(CacheItem item) {

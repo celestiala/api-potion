@@ -1,6 +1,7 @@
 package com.tmoncorp.apipotion.spring.clientinfo;
 
 import com.tmoncorp.apipotion.core.clientinfo.ClientInfo;
+import com.tmoncorp.apipotion.core.clientinfo.ClientInfoProvider;
 import com.tmoncorp.apipotion.core.clientinfo.ClientPlatform;
 import com.tmoncorp.apipotion.core.clientinfo.HeaderNames;
 import org.springframework.web.servlet.ModelAndView;
@@ -19,7 +20,7 @@ public class ClientInfoInterceptor extends HandlerInterceptorAdapter {
         if (platform != null && !"".equals(platform))
             info.setPlatform(ClientPlatform.valueOf(platform));
         else
-            info.setPlatform(ClientPlatform.MOBILE);
+            info.setPlatform(ClientInfoProvider.getInfo().getPlatform());
         info.setVersion(request.getHeader(HeaderNames.API_VERSION));
         //TODO check header name
         info.setUserAgent(request.getHeader(HeaderNames.USER_AGENT));

@@ -76,6 +76,10 @@ public class CacheInterceptorService implements InterceptionService, HttpServlet
         return null;
     }
 
+    public MethodInterceptor getInterceptor(){
+        return intercepter;
+    }
+
     public JerseyMemCacheRepository getCacheRepo() {
         cacheRepo.setHttpCache(cacheSupport);
         cacheRepo.setSupportInvalidateRequest(isDebug);

@@ -30,20 +30,18 @@ public class SpringCacheService extends CacheService {
     }
 
     @Override
+    protected void beforeMakeAsyncCache(Object info){
+        ClientInfoService.setInfo((ClientInfo)info);
+    }
+
+    protected void afterMakeAsyncCache(){
+        ClientInfoService.clean();
+    }
+
+    @Override
     protected void makeAsyncCache(final String keyName, final Cache cacheinfo, MethodInvocation mi) {
         final ClientInfo info = ClientInfoService.getInfo();
-        Runnable cacheRequest = () -> {
-            ClientInfoService.setInfo(info);
-            try {
-                makeExpiredCache(keyName, cacheinfo, mi);
-            } catch (Exception e) {
-                LOG.warn("Cache set exception {}", e);
-            } finally {
-                ClientInfoService.clean();
-            }
-        };
-
-        asyncWorker.submitAsync(cacheRequest);
+        makeAsyncCache(keyName,cacheinfo,mi,info);
 
     }
 }

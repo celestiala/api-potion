@@ -3,6 +3,7 @@ package com.tmoncorp.apipotion.spring.cache;
 import com.tmoncorp.apipotion.core.cache.*;
 import com.tmoncorp.apipotion.spring.async.AsyncService;
 import org.aopalliance.intercept.MethodInvocation;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,19 +31,23 @@ public class MemcacheClient implements CacheProvider, CacheRepository {
     private SpringHttpCacheSupport httpCacheSupport;
 
     private boolean isDebug=false;
+    private boolean isInitialized=false;
 
     public MemcacheClient() {
 
         try {
             Properties props = PropertiesLoaderUtils.loadAllProperties(APPLICATION_PROPERTIES);
-            String buildEnv = props.getProperty(ENVIRONMENT_PROPERTY).substring(0, 2);
             String memcacheUrls = props.getProperty(MEMCACHE_SERVER_PROPERTY);
+            if (StringUtils.isEmpty(memcacheUrls))
+                return;
+            String buildEnv = props.getProperty(ENVIRONMENT_PROPERTY).substring(0, 2);
             String cachePrefix = props.getProperty(CACHE_PREFIX_PROPERTY, CACHE_PREFIX_DEFAULT);
 
             isDebug=!buildEnv.startsWith("r");
 
             memCacheRepository = new MemCacheRepository(memcacheUrls, buildEnv, cachePrefix);
             innerCacheService = new SpringCacheService(memCacheRepository, run -> ayncService.submitAsync(run));
+            isInitialized=true;
         } catch (Exception e) {
             LOGGER.error("memcache client initialize failed : {}", e);
         }
@@ -50,6 +55,8 @@ public class MemcacheClient implements CacheProvider, CacheRepository {
 
     @PostConstruct
     public void init(){
+        if (!isInitialized)
+            return;
         innerCacheService.setHttpCache(httpCacheSupport);
         innerCacheService.setSupportInvalidateRequest(isDebug);
     }

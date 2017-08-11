@@ -1,10 +1,12 @@
 package com.tmoncorp.apipotion.spring.http;
 
 import com.tmoncorp.apipotion.core.clientinfo.ClientInfoProvider;
+import com.tmoncorp.apipotion.core.clientinfo.ClientPlatform;
 import com.tmoncorp.apipotion.core.clientinfo.HeaderNames;
 import com.tmoncorp.apipotion.core.http.AsyncHttpClientBuilder;
 import com.tmoncorp.apipotion.core.http.ClientBuilder;
 import com.tmoncorp.apipotion.core.http.HttpClientBuilder;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.http.Header;
 import org.apache.http.HttpHeaders;
 import org.apache.http.impl.client.CloseableHttpClient;
@@ -14,6 +16,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
+import org.springframework.core.io.support.PropertiesLoaderUtils;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
@@ -21,6 +24,7 @@ import javax.annotation.PreDestroy;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Properties;
 
 @Component
 @PropertySource({"classpath:/applicationProperty.properties"})
@@ -31,6 +35,9 @@ public class SpringHttpClientFactory {
 
 
     private static final Logger LOG = LoggerFactory.getLogger(SpringHttpClientFactory.class);
+
+    private static final String APPLICATION_PROPERTIES = "applicationProperty.properties";
+    private static final String CLIENT_PLATORM_PROPERTY="client.platform";
 
     @Value("${apiClient.readTimeout:30000}")
     String defaultReadTimeout;
@@ -43,9 +50,23 @@ public class SpringHttpClientFactory {
     @Value("${apiClient.maxDefaultRoute:200}")
     String defaultMaxPerRoute;
 
+    @Value("${client.platform:MOBILE}")
+    String clientPlatform;
+
+
+    private void setClientPlatform(){
+        if (StringUtils.isEmpty(clientPlatform))
+            return;
+        ClientPlatform platform=ClientPlatform.valueOf(clientPlatform);
+        if (platform != null)
+            ClientInfoProvider.setDefaultPlatform(platform);
+    }
 
     @PostConstruct
     public void init(){
+
+        setClientPlatform();
+
         HttpClientBuilder builder=new HttpClientBuilder();
         configure(builder);
         client=builder.build();

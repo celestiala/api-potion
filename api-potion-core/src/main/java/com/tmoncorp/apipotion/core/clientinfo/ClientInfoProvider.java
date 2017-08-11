@@ -28,4 +28,8 @@ public class ClientInfoProvider {
     public static void clean() {
         THREAD_LOCAL.remove();
     }
+
+    public static void setDefaultPlatform(ClientPlatform platform){
+        DEFAULT_INFO.setPlatform(platform);
+    }
 }

@@ -89,6 +89,7 @@ public class HttpClientBuilder implements ClientBuilder{
                 .setDefaultRequestConfig(requestConfigBuilder.build())
                 .setUserAgent(userAgent)
                 .setConnectionManager(cm)
+                .setConnectionManagerShared(true)
                 .setDefaultHeaders(defaultHeaders)
                 .setRetryHandler(retryHandler)
                 .build();
