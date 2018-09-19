@@ -31,4 +31,4 @@ You can test with snapshot, official release will be soon
      </dependency>
 
 ## Copyright and license
-Code and documentation copyright 2016 Ticketmonster, Inc. Code released under [the MIT license](LICENSE). Docs released under [Creative Commons](https://creativecommons.org/licenses/by/4.0/)
+Code released under [the MIT license](LICENSE). Docs released under [Creative Commons](https://creativecommons.org/licenses/by/4.0/)
