@@ -18,14 +18,14 @@ You can test with snapshot, official release will be soon
 
 #### Spring framework
      <dependency>
-       <groupId>com.github.tmoncorp</groupId>
+       <groupId>com.github.celestiala</groupId>
        <artifactId>api-potion-spring</artifactId>
        <version>0.0.1-SNAPSHOT</version>
      </dependency>
 
 #### Jersey framework
      <dependency>
-       <groupId>com.github.tmoncorp</groupId>
+       <groupId>com.github.celestiala</groupId>
        <artifactId>api-potion-jersey</artifactId>
        <version>0.0.1-SNAPSHOT</version>
      </dependency>
