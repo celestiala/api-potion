@@ -1,9 +1,9 @@
-package com.tmoncorp.mobile;
+package com.celestiala.mobile;
 
-import com.tmoncorp.core.controller.BaseApiController;
-import com.tmoncorp.apipotion.spring.http.ApiResponse;
-import com.tmoncorp.apipotion.spring.http.RestClientTemplate;
-import com.tmoncorp.apipotion.spring.http.SpringHttpClientFactory;
+import com.celestiala.core.controller.BaseApiController;
+import com.celestiala.apipotion.spring.http.ApiResponse;
+import com.celestiala.apipotion.spring.http.RestClientTemplate;
+import com.celestiala.apipotion.spring.http.SpringHttpClientFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

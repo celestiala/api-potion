@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Implementation-Title: spring-tester
 Implementation-Version: 0.0.1-SNAPSHOT
 Built-By: joshua
-Implementation-Vendor-Id: com.tmoncorp
+Implementation-Vendor-Id: com.celestiala
 Created-By: Apache Maven 3.0.5
 Build-Jdk: 1.8.0_91
 

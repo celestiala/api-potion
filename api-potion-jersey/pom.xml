@@ -34,7 +34,7 @@
 
                         <configuration>
                             <includes>
-                                <include>com/tmoncorp/apipotion/jersey/**/*</include>
+                                <include>com/celestiala/apipotion/jersey/**/*</include>
                             </includes>
 
                         </configuration>
@@ -71,6 +71,7 @@
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
+
         </dependencies>
     </dependencyManagement>
     <dependencies>
@@ -86,30 +87,48 @@
             <version>1.2</version>
         </dependency>
         <dependency>
-            <groupId>org.glassfish.jersey.core</groupId>
-            <artifactId>jersey-common</artifactId>
+            <groupId>com.github.celestiala</groupId>
+            <artifactId>api-potion-core</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.glassfish.jersey.core</groupId>
             <artifactId>jersey-server</artifactId>
+            <version>${jersey.version}</version>
         </dependency>
         <dependency>
-            <groupId>org.glassfish.jersey.connectors</groupId>
-            <artifactId>jersey-apache-connector</artifactId>
+            <groupId>org.glassfish.jersey.inject</groupId>
+            <artifactId>jersey-hk2</artifactId>
+            <version>${jersey.version}</version>
         </dependency>
         <dependency>
-            <groupId>com.github.tmoncorp</groupId>
-            <artifactId>api-potion-core</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
+            <groupId>javax.servlet</groupId>
+            <artifactId>javax.servlet-api</artifactId>
+            <version>3.1.0</version>
+            <scope>provided</scope>
+            <exclusions>
+                <exclusion>
+                    <artifactId>log4j</artifactId>
+                    <groupId>log4j</groupId>
+                </exclusion>
+                <exclusion>
+                    <artifactId>slf4j-log4j12</artifactId>
+                    <groupId>org.slf4j</groupId>
+                </exclusion>
+                <exclusion>
+                    <artifactId>common-logging</artifactId>
+                    <groupId>common-logging</groupId>
+                </exclusion>
+            </exclusions>
         </dependency>
     </dependencies>
     <properties>
-        <jersey.version>2.22.1</jersey.version>
+        <jersey.version>2.27</jersey.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
     </properties>
     <parent>
-        <groupId>com.github.tmoncorp</groupId>
+        <groupId>com.github.celestiala</groupId>
         <artifactId>api-potion</artifactId>
         <version>0.0.1-SNAPSHOT</version>
     </parent>

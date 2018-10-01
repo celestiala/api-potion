@@ -233,7 +233,7 @@
 
     </dependencies>
     <parent>
-        <groupId>com.github.tmoncorp</groupId>
+        <groupId>com.github.celestiala</groupId>
         <artifactId>api-potion</artifactId>
         <version>0.0.1-SNAPSHOT</version>
     </parent>

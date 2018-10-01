@@ -64,7 +64,7 @@
     </filter-mapping>
     <filter>
         <filter-name>requestFilterChain</filter-name>
-        <filter-class>com.tmoncorp.mvc.filter.CustomizedHttpServletRequestFilter</filter-class>
+        <filter-class>com.celestiala.mvc.filter.CustomizedHttpServletRequestFilter</filter-class>
     </filter>
     <filter-mapping>
         <filter-name>requestFilterChain</filter-name>
@@ -72,7 +72,7 @@
     </filter-mapping>
     <filter>
         <filter-name>mdcServletFilter</filter-name>
-        <filter-class>com.tmoncorp.core.logback.filter.MDCServletFilter</filter-class>
+        <filter-class>com.celestiala.core.logback.filter.MDCServletFilter</filter-class>
     </filter>
     <filter-mapping>
         <filter-name>mdcServletFilter</filter-name>

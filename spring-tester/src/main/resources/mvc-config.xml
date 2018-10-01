@@ -21,11 +21,11 @@
         </mvc:message-converters>
     </mvc:annotation-driven>
     <bean id="clientInfoInterceptor"
-          class="com.tmoncorp.apipotion.spring.clientinfo.ClientInfoInterceptor"/>
-    <bean name="tmonObjectMapper" class="com.tmoncorp.core.jackson.mapper.TmonObjectMapper"/>
+          class="com.celestiala.apipotion.spring.clientinfo.ClientInfoInterceptor"/>
+    <bean name="tmonObjectMapper" class="com.celestiala.core.jackson.mapper.TmonObjectMapper"/>
     <bean id="restTemplate" class="org.springframework.web.client.RestTemplate"/>
 
-    <bean class="com.tmoncorp.core.mvc.method.ApiRequestMappingHandlerMapping">
+    <bean class="com.celestiala.core.mvc.method.ApiRequestMappingHandlerMapping">
         <property name="interceptors">
             <list>
                 <ref bean="clientInfoInterceptor"/>
@@ -34,7 +34,7 @@
     </bean>
 
     <mvc:interceptors>
-        <bean class="com.tmoncorp.core.mvc.interceptor.ApiLoggerInterceptor"/>
+        <bean class="com.celestiala.core.mvc.interceptor.ApiLoggerInterceptor"/>
     </mvc:interceptors>
 
 

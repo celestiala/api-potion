@@ -1,8 +1,8 @@
-package com.tmoncorp.mobile.resource;
-import com.tmoncorp.mobile.repository.CacheTestRepository;
-import com.tmoncorp.mobile.util.common.cache.Cache;
-import com.tmoncorp.mobile.util.common.cache.CacheStorage;
-import com.tmoncorp.mobile.util.common.cache.httpcache.HttpCacheType;
+package com.celestiala.mobile.resource;
+import com.celestiala.mobile.repository.CacheTestRepository;
+import com.celestiala.mobile.util.common.cache.Cache;
+import com.celestiala.mobile.util.common.cache.CacheStorage;
+import com.celestiala.mobile.util.common.cache.httpcache.HttpCacheType;
 
 import javax.inject.Inject;
 import javax.ws.rs.GET;

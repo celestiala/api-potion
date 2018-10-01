@@ -1,7 +1,7 @@
-package com.tmoncorp.mobile.resource;
+package com.celestiala.mobile.resource;
 
-import com.tmoncorp.mobile.init.JerseyTestConfig;
-import com.tmoncorp.apipotion.jersey.async.AsyncRunner;
+import com.celestiala.mobile.init.JerseyTestConfig;
+import com.celestiala.apipotion.jersey.async.AsyncRunner;
 import org.glassfish.jersey.test.JerseyTest;
 import org.junit.Assert;
 import org.junit.Test;

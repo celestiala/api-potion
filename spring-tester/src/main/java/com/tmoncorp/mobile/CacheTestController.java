@@ -1,6 +1,6 @@
-package com.tmoncorp.mobile;
+package com.celestiala.mobile;
 
-import com.tmoncorp.core.controller.BaseApiController;
+import com.celestiala.core.controller.BaseApiController;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;

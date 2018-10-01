@@ -1,4 +1,4 @@
-package com.tmoncorp.mobile.repository;
+package com.celestiala.mobile.repository;
 
 
 public class CacheTestRepository {

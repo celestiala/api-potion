@@ -1,9 +1,9 @@
-package com.tmoncorp.mobile;
+package com.celestiala.mobile;
 
-import com.tmoncorp.apipotion.core.cache.Cache;
-import com.tmoncorp.apipotion.core.cache.CacheParam;
-import com.tmoncorp.apipotion.core.cache.CacheStorage;
-import com.tmoncorp.apipotion.core.cache.Invalidate;
+import com.celestiala.apipotion.core.cache.Cache;
+import com.celestiala.apipotion.core.cache.CacheParam;
+import com.celestiala.apipotion.core.cache.CacheStorage;
+import com.celestiala.apipotion.core.cache.Invalidate;
 import org.springframework.stereotype.Service;
 
 /**

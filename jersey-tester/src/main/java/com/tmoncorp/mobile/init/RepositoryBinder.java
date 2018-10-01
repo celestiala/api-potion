@@ -1,6 +1,6 @@
-package com.tmoncorp.mobile.init;
+package com.celestiala.mobile.init;
 
-import com.tmoncorp.mobile.repository.CacheTestRepository;
+import com.celestiala.mobile.repository.CacheTestRepository;
 import org.glassfish.hk2.utilities.binding.AbstractBinder;
 
 import javax.inject.Singleton;
